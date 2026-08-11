@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -48,15 +48,33 @@ export function NoteActions({
   const router = useRouter();
 
   const [openMenu, setOpenMenu] = useState(false);
-
   const [showDelete, setShowDelete] = useState(false);
 
   const [isPending, startTransition] = useTransition();
 
   const [message, setMessage] = useState("");
-
   const [error, setError] = useState("");
 
+  /**
+   * Clear notification messages automatically.
+   */
+  useEffect(() => {
+    if (!message && !error) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setMessage("");
+      setError("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [message, error]);
+
+  /**
+   * Execute a server action and refresh
+   * the current Server Component data.
+   */
   function execute(
     action: () => Promise<ActionResult>
   ) {
@@ -64,51 +82,79 @@ export function NoteActions({
     setError("");
 
     startTransition(async () => {
-      const result = await action();
+      try {
+        const result = await action();
 
-      if (result.error) {
-        setError(result.error);
-        return;
+        if (result.error) {
+          setError(result.error);
+          return;
+        }
+
+        if (result.success) {
+          setMessage(result.success);
+        }
+
+        setOpenMenu(false);
+
+        /**
+         * Refresh Server Components so that:
+         *
+         * /notes
+         *     ↓
+         * getNotes()
+         *     ↓
+         * archived notes are removed
+         *
+         * /archive
+         *     ↓
+         * archived notes appear
+         */
+        router.refresh();
+      } catch {
+        setError(
+          "Something went wrong. Please try again."
+        );
       }
-
-      if (result.success) {
-        setMessage(result.success);
-      }
-
-      setOpenMenu(false);
-
-      router.refresh();
-
-      // Remove the message after a few seconds
-      setTimeout(() => {
-        setMessage("");
-      }, 3000);
     });
   }
 
   return (
     <>
       <div className="relative">
-        {/* More button */}
+        {/* More Button */}
         <Button
+          type="button"
           variant="ghost"
           size="icon"
           disabled={isPending}
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
             setOpenMenu((prev) => !prev);
+
+            setMessage("");
             setError("");
           }}
+          aria-label="Note actions"
+          aria-expanded={openMenu}
         >
           <MoreVertical className="h-5 w-5" />
         </Button>
 
-        {/* Action menu */}
+        {/* Action Menu */}
         {openMenu && (
-          <div className="absolute right-0 z-50 mt-2 w-52 rounded-xl border border-slate-200 bg-white py-2 shadow-xl dark:border-slate-700 dark:bg-[#111A1F]">
+          <div
+            className="absolute right-0 z-50 mt-2 w-52 rounded-xl border border-slate-200 bg-white py-2 shadow-xl dark:border-slate-700 dark:bg-[#111A1F]"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+          >
             {/* Pin / Unpin */}
             <button
               type="button"
-              className="flex w-full items-center gap-3 px-4 py-2 text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="flex w-full items-center gap-3 px-4 py-2 text-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-slate-800"
               disabled={isPending}
               onClick={() =>
                 execute(() =>
@@ -135,7 +181,7 @@ export function NoteActions({
             {isArchived ? (
               <button
                 type="button"
-                className="flex w-full items-center gap-3 px-4 py-2 text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="flex w-full items-center gap-3 px-4 py-2 text-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-slate-800"
                 disabled={isPending}
                 onClick={() =>
                   execute(() =>
@@ -151,7 +197,7 @@ export function NoteActions({
             ) : (
               <button
                 type="button"
-                className="flex w-full items-center gap-3 px-4 py-2 text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="flex w-full items-center gap-3 px-4 py-2 text-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-slate-800"
                 disabled={isPending}
                 onClick={() =>
                   execute(() =>
@@ -169,7 +215,7 @@ export function NoteActions({
             {/* Delete */}
             <button
               type="button"
-              className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
+              className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-red-900/20"
               disabled={isPending}
               onClick={() => {
                 setOpenMenu(false);
@@ -182,22 +228,34 @@ export function NoteActions({
           </div>
         )}
 
-        {/* Success message */}
+        {/* Success Message */}
         {message && (
-          <div className="absolute right-0 top-full z-40 mt-3 w-64 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 shadow-lg dark:border-green-900 dark:bg-green-900/20 dark:text-green-400">
-            ✓ {message}
+          <div
+            role="status"
+            className="absolute right-0 top-full z-40 mt-3 w-64 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 shadow-lg dark:border-green-900 dark:bg-green-900/20 dark:text-green-400"
+          >
+            <div className="flex items-start gap-2">
+              <span className="font-bold">✓</span>
+              <span>{message}</span>
+            </div>
           </div>
         )}
 
-        {/* Error message */}
+        {/* Error Message */}
         {error && (
-          <div className="absolute right-0 top-full z-40 mt-3 w-64 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-lg dark:border-red-900 dark:bg-red-900/20 dark:text-red-400">
-            ✕ {error}
+          <div
+            role="alert"
+            className="absolute right-0 top-full z-40 mt-3 w-64 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-lg dark:border-red-900 dark:bg-red-900/20 dark:text-red-400"
+          >
+            <div className="flex items-start gap-2">
+              <span className="font-bold">✕</span>
+              <span>{error}</span>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Delete dialog */}
+      {/* Delete Dialog */}
       <NoteDeleteDialog
         open={showDelete}
         loading={isPending}
@@ -208,7 +266,9 @@ export function NoteActions({
               id: noteId,
             });
 
-            setShowDelete(false);
+            if (!result.error) {
+              setShowDelete(false);
+            }
 
             return result;
           })

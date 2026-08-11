@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -9,13 +11,14 @@ const RestoreNoteSchema = z.object({
   id: z.string().cuid(),
 });
 
-export type RestoreNoteInput =
-  z.infer<typeof RestoreNoteSchema>;
-
 interface ActionResult {
   success?: string;
   error?: string;
 }
+
+export type RestoreNoteInput = z.infer<
+  typeof RestoreNoteSchema
+>;
 
 export async function restoreNote(
   values: RestoreNoteInput
@@ -40,12 +43,11 @@ export async function restoreNote(
 
     const { id } = validated.data;
 
-    const note =
-      await prisma.note.findUnique({
-        where: {
-          id,
-        },
-      });
+    const note = await prisma.note.findUnique({
+      where: {
+        id,
+      },
+    });
 
     if (!note) {
       return {
@@ -53,10 +55,7 @@ export async function restoreNote(
       };
     }
 
-    if (
-      note.userId !==
-      session.user.id
-    ) {
+    if (note.userId !== session.user.id) {
       return {
         error: "Unauthorized.",
       };
@@ -77,11 +76,17 @@ export async function restoreNote(
       },
     });
 
+    revalidatePath("/notes");
+    revalidatePath("/archive");
+    revalidatePath("/dashboard");
+    revalidatePath("/calendar");
+
     return {
-      success:
-        "Note restored successfully.",
+      success: "Note restored successfully.",
     };
-  } catch {
+  } catch (error) {
+    console.error("restoreNote error:", error);
+
     return {
       error:
         "Something went wrong while restoring the note.",

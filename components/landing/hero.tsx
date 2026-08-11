@@ -13,9 +13,9 @@ export function Hero() {
       <div className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col-reverse items-center gap-16 px-6 py-20 lg:flex-row lg:px-8">
         {/* Left Content */}
         <div className="flex-1 text-center lg:text-left">
-          <span className="inline-flex items-center rounded-full border border-[#6A89A7]/30 bg-[#6A89A7]/10 px-4 py-1 text-sm font-medium text-[#6A89A7]">
+          {/* <span className="inline-flex items-center rounded-full border border-[#6A89A7]/30 bg-[#6A89A7]/10 px-4 py-1 text-sm font-medium text-[#6A89A7]">
             Smarter note taking starts here
-          </span>
+          </span> */}
 
           <h1 className="mt-6 text-5xl font-bold leading-tight text-slate-900 dark:text-white md:text-6xl">
             Organize your

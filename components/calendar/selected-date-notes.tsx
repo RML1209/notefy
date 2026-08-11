@@ -11,6 +11,7 @@ import Link from "next/link";
 import {
   CalendarDays,
   Pin,
+  SearchX,
 } from "lucide-react";
 
 import { getNotesByDate } from "@/actions/calendar/get-notes-by-date";
@@ -28,27 +29,75 @@ interface NoteItem {
 
 interface SelectedDateNotesProps {
   selectedDate: Date;
+  search: string;
 }
 
 export function SelectedDateNotes({
   selectedDate,
+  search,
 }: SelectedDateNotesProps) {
-  const [notes, setNotes] =
-    useState<NoteItem[]>([]);
+  const [notes, setNotes] = useState<NoteItem[]>([]);
 
   const [isPending, startTransition] =
     useTransition();
 
+  /*
+   * Fetch notes whenever the selected
+   * calendar date changes.
+   */
   useEffect(() => {
+    let cancelled = false;
+
     startTransition(async () => {
-      const result =
-        await getNotesByDate({
+      try {
+        const result = await getNotesByDate({
           date: selectedDate,
         });
 
-      setNotes(result.notes ?? []);
+        if (!cancelled) {
+          setNotes(result.notes ?? []);
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load notes for selected date:",
+          error
+        );
+
+        if (!cancelled) {
+          setNotes([]);
+        }
+      }
     });
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedDate]);
+
+  /*
+   * Filter notes locally based on the
+   * calendar search input.
+   *
+   * Searching checks both title and content.
+   */
+  const normalizedSearch =
+    search.trim().toLowerCase();
+
+  const filteredNotes =
+    normalizedSearch === ""
+      ? notes
+      : notes.filter((note) => {
+          const title =
+            note.title.toLowerCase();
+
+          const content =
+            note.content.toLowerCase();
+
+          return (
+            title.includes(normalizedSearch) ||
+            content.includes(normalizedSearch)
+          );
+        });
 
   const formattedDate =
     selectedDate.toLocaleDateString(
@@ -65,7 +114,7 @@ export function SelectedDateNotes({
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-[#111A1F]">
       {/* Header */}
       <div className="mb-6 flex items-center gap-3">
-        <CalendarDays className="h-5 w-5 text-[#6A89A7]" />
+        <CalendarDays className="h-5 w-5 shrink-0 text-[#6A89A7]" />
 
         <div>
           <h3 className="font-semibold text-slate-900 dark:text-white">
@@ -73,11 +122,19 @@ export function SelectedDateNotes({
           </h3>
 
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            {notes.length}{" "}
-            {notes.length === 1
-              ? "note"
-              : "notes"}{" "}
-            scheduled
+            {isPending
+              ? "Loading notes..."
+              : search.trim()
+                ? `${filteredNotes.length} ${
+                    filteredNotes.length === 1
+                      ? "note"
+                      : "notes"
+                  } found`
+                : `${notes.length} ${
+                    notes.length === 1
+                      ? "note"
+                      : "notes"
+                  } scheduled`}
           </p>
         </div>
       </div>
@@ -92,24 +149,45 @@ export function SelectedDateNotes({
             />
           ))}
         </div>
-      ) : notes.length === 0 ? (
-        /* Empty state */
+      ) : filteredNotes.length === 0 ? (
+        /*
+         * Empty / Search empty state
+         */
         <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-700">
-          <CalendarDays className="mx-auto mb-3 h-8 w-8 text-slate-400" />
+          {normalizedSearch ? (
+            <>
+              <SearchX className="mx-auto mb-3 h-8 w-8 text-slate-400" />
 
-          <p className="font-medium text-slate-700 dark:text-slate-300">
-            No notes scheduled
-          </p>
+              <p className="font-medium text-slate-700 dark:text-slate-300">
+                No matching notes
+              </p>
 
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            There are no notes or reminders for
-            this day.
-          </p>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                No notes match &quot;{search}&quot;
+                for this date.
+              </p>
+            </>
+          ) : (
+            <>
+              <CalendarDays className="mx-auto mb-3 h-8 w-8 text-slate-400" />
+
+              <p className="font-medium text-slate-700 dark:text-slate-300">
+                No notes scheduled
+              </p>
+
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                There are no notes or reminders
+                for this day.
+              </p>
+            </>
+          )}
         </div>
       ) : (
-        /* Notes */
+        /*
+         * Notes list
+         */
         <div className="space-y-4">
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
             <Link
               key={note.id}
               href={`/notes/${note.id}`}

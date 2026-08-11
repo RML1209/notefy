@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Plus, X } from "lucide-react";
+import { Search, Plus,} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -63,7 +63,7 @@ export function NoteToolbar({
                 aria-label="Clear search"
                 className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
               >
-                <X className="h-4 w-4" />
+                
               </button>
             )}
           </div>

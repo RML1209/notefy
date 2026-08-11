@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Notefy",
   description: "A simple note-taking app",
+  icons: {
+    icon: "/notefy-logo.png", // Path relative to the /public folder
+  },
 };
 
 export default function RootLayout({

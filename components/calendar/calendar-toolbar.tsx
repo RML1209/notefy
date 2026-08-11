@@ -2,26 +2,26 @@
 
 import Link from "next/link";
 
-import { Search, Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 interface CalendarToolbarProps {
-  search?: string;
-  onSearchChange?: (value: string) => void;
+  search: string;
+  onSearchChange: (value: string) => void;
 }
 
 export function CalendarToolbar({
-  search = "",
+  search,
   onSearchChange,
 }: CalendarToolbarProps) {
   return (
-    <section className="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#111A1F] md:p-6">
+    <section className="space-y-5">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
           Calendar
-        </h2>
+        </h1>
 
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           View your reminders and scheduled notes.
@@ -38,12 +38,24 @@ export function CalendarToolbar({
             type="search"
             value={search}
             onChange={(event) =>
-              onSearchChange?.(event.target.value)
+              onSearchChange(event.target.value)
             }
             placeholder="Search notes or reminders..."
             aria-label="Search calendar notes and reminders"
-            className="h-11 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm text-slate-900 outline-none transition focus:border-[#6A89A7] focus:ring-2 focus:ring-[#6A89A7]/20 dark:border-slate-700 dark:bg-[#0B1215] dark:text-white dark:placeholder:text-slate-500"
+            className="h-11 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-10 text-sm text-slate-900 outline-none transition focus:border-[#6A89A7] focus:ring-2 focus:ring-[#6A89A7]/20 dark:border-slate-700 dark:bg-[#0B1215] dark:text-white dark:placeholder:text-slate-500"
           />
+
+          {/* Clear search */}
+          {search && (
+            <button
+              type="button"
+              onClick={() => onSearchChange("")}
+              aria-label="Clear calendar search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 transition hover:text-slate-700 dark:hover:text-slate-200"
+            >
+              
+            </button>
+          )}
         </div>
 
         {/* New Note */}

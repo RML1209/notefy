@@ -1,7 +1,6 @@
 import { getReminders } from "@/actions/calendar/get-reminders";
 
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
-import { CalendarToolbar } from "@/components/calendar/calendar-toolbar";
 import { CalendarClient } from "@/components/calendar/calendar-client";
 
 export default async function CalendarPage() {
@@ -16,9 +15,9 @@ export default async function CalendarPage() {
         description="View your reminders and scheduled notes."
       />
 
-      <CalendarToolbar />
-
-      <CalendarClient reminders={reminders} />
+      <CalendarClient
+        reminders={reminders}
+      />
     </div>
   );
 }

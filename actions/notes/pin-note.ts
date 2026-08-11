@@ -1,19 +1,24 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+
 import { z } from "zod";
 
 const PinNoteSchema = z.object({
   id: z.string().cuid(),
 });
 
-export type PinNoteInput = z.infer<typeof PinNoteSchema>;
-
 interface ActionResult {
   success?: string;
   error?: string;
 }
+
+export type PinNoteInput = z.infer<
+  typeof PinNoteSchema
+>;
 
 export async function pinNote(
   values: PinNoteInput
@@ -50,29 +55,35 @@ export async function pinNote(
       };
     }
 
-    // Make sure the note belongs to the logged-in user
     if (note.userId !== session.user.id) {
       return {
         error: "Unauthorized.",
       };
     }
 
-    // Toggle pin status
-    await prisma.note.update({
-      where: {
-        id,
-      },
-      data: {
-        isPinned: !note.isPinned,
-      },
-    });
+    const updatedNote =
+      await prisma.note.update({
+        where: {
+          id,
+        },
+        data: {
+          isPinned: !note.isPinned,
+        },
+      });
+
+    revalidatePath("/notes");
+    revalidatePath("/archive");
+    revalidatePath("/dashboard");
+    revalidatePath("/calendar");
 
     return {
-      success: note.isPinned
-        ? "Note unpinned successfully."
-        : "Note pinned successfully.",
+      success: updatedNote.isPinned
+        ? "Note pinned successfully."
+        : "Note unpinned successfully.",
     };
-  } catch {
+  } catch (error) {
+    console.error("pinNote error:", error);
+
     return {
       error:
         "Something went wrong while updating the note.",

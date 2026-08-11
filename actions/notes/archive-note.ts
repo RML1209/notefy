@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
@@ -8,13 +9,14 @@ const ArchiveNoteSchema = z.object({
   id: z.string().cuid(),
 });
 
-export type ArchiveNoteInput =
-  z.infer<typeof ArchiveNoteSchema>;
-
 interface ActionResult {
   success?: string;
   error?: string;
 }
+
+export type ArchiveNoteInput = z.infer<
+  typeof ArchiveNoteSchema
+>;
 
 export async function archiveNote(
   values: ArchiveNoteInput
@@ -72,10 +74,18 @@ export async function archiveNote(
       },
     });
 
+    // Revalidate pages affected by the change
+    revalidatePath("/notes");
+    revalidatePath("/archive");
+    revalidatePath("/dashboard");
+    revalidatePath("/calendar");
+
     return {
       success: "Note archived successfully.",
     };
-  } catch {
+  } catch (error) {
+    console.error("archiveNote error:", error);
+
     return {
       error:
         "Something went wrong while archiving the note.",
