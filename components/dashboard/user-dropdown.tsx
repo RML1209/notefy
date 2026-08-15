@@ -72,7 +72,7 @@ export function UserDropdown({
         onClick={() =>
           setOpen(!open)
         }
-        className="flex items-center gap-3 rounded-xl border border-slate-300 bg-white px-3 py-2 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-[#111A1F] dark:hover:bg-slate-800"
+        className="flex items-center gap-3  bg-white px-3 py-2 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-[#111A1F] dark:hover:bg-slate-800"
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#6A89A7] font-semibold text-white">
           {user.name

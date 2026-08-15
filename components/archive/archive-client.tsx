@@ -54,7 +54,7 @@ export function ArchiveClient({
 
       {/* Results */}
       {filteredNotes.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-[#111A1F]">
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-300 dark:bg-[#111A1F]">
           {search.trim() ? (
             <>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white">

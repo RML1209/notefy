@@ -78,7 +78,7 @@ export function ArchiveNoteCard({
   }
 
   return (
-    <article className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-800 dark:bg-[#111A1F]">
+    <article className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-100 dark:bg-[#111A1F]">
       {/* Header */}
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">

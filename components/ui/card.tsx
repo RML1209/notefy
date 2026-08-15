@@ -16,7 +16,7 @@ const Card = React.forwardRef<
       ref={ref}
       className={cn(
         "rounded-2xl border",
-        "border-slate-200 dark:border-[#1E2A31]",
+        "border-slate-200 dark:border-slate-700",
         "bg-white dark:bg-[#111A1F]",
         "shadow-sm",
         "transition-all duration-200",

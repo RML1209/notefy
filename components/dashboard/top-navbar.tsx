@@ -1,16 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-
 import { usePathname } from "next/navigation";
 
-import {
-  Bell,
-  Moon,
-  Search,
-  Sun,
-} from "lucide-react";
+import { Bell } from "lucide-react";
 
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserDropdown } from "./user-dropdown";
 
 interface TopNavbarProps {
@@ -56,46 +51,66 @@ export function TopNavbar({
     <div className="flex w-full items-center justify-between gap-4">
       {/* Page Title */}
       <div>
-        <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+        <h1
+          className="
+            text-xl
+            font-bold
+            text-slate-900
+            transition-colors
+            dark:text-white
+          "
+        >
           {title}
         </h1>
 
-        <p className="hidden text-sm text-slate-500 md:block dark:text-slate-400">
+        <p
+          className="
+            hidden
+            text-sm
+            text-slate-600
+            transition-colors
+            md:block
+            dark:text-slate-400
+          "
+        >
           Welcome back, {user.name ?? "User"}.
         </p>
       </div>
 
       {/* Right Side */}
-      <div className="flex items-center gap-3">
-        {/* Search */}
-        <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-
-          <input
-            type="text"
-            placeholder="Search notes..."
-            className="h-10 w-64 rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-[#6A89A7] dark:border-slate-700 dark:bg-[#111A1F] dark:text-white"
-          />
-        </div>
-
+      <div className="flex items-center gap-2 sm:gap-3">
         {/* Theme Toggle */}
-        <button
-          className="rounded-xl border border-slate-300 p-2 transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
-          aria-label="Toggle theme"
-        >
-          <Sun className="h-5 w-5 dark:hidden" />
-
-          <Moon className="hidden h-5 w-5 dark:block" />
-        </button>
+        <ThemeToggle />
 
         {/* Notifications */}
         <button
-          className="relative rounded-xl border border-slate-300 p-2 transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+          type="button"
+          className="
+            relative
+            rounded-xl
+            p-2
+            text-slate-700
+            transition-colors
+            hover:bg-black/10
+            dark:text-slate-200
+            dark:hover:bg-white/10
+          "
           aria-label="Notifications"
         >
           <Bell className="h-5 w-5" />
 
-          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
+          {/* Notification indicator */}
+          <span
+            className="
+              absolute
+              right-1
+              top-1
+              h-2
+              w-2
+              rounded-full
+              bg-red-500
+            "
+          />
         </button>
 
         {/* User Menu */}

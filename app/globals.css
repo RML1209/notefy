@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
+/*
+  Tailwind v4:
+  Make dark: utilities respond to the .dark class
+  controlled by next-themes instead of the OS preference.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+.dark {
+  --background: #0b1215;
+  --foreground: #f8fafc;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  min-height: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+/*
+  Prevent links/buttons from inheriting unexpected
+  browser colors.
+*/
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
 }
