@@ -7,7 +7,8 @@
     "build": "next build",
     "email": "email dev",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "reminder:dev": "node --env-file=.env.local scripts/reminder-cron.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
