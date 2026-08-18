@@ -3,10 +3,20 @@
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 
-import { Bell } from "lucide-react";
-
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+
+import { ReminderNotification } from "./reminder-notification";
 import { UserDropdown } from "./user-dropdown";
+
+interface Reminder {
+  id: string;
+  title: string;
+  content: string;
+  remindAt: Date | null;
+  isReminderSent: boolean;
+  isPinned: boolean;
+  isArchived: boolean;
+}
 
 interface TopNavbarProps {
   user: {
@@ -15,10 +25,13 @@ interface TopNavbarProps {
     email?: string | null;
     image?: string | null;
   };
+
+  reminders: Reminder[];
 }
 
 export function TopNavbar({
   user,
+  reminders,
 }: TopNavbarProps) {
   const pathname = usePathname();
 
@@ -82,36 +95,8 @@ export function TopNavbar({
         {/* Theme Toggle */}
         <ThemeToggle />
 
-        {/* Notifications */}
-        <button
-          type="button"
-          className="
-            relative
-            rounded-xl
-            p-2
-            text-slate-700
-            transition-colors
-            hover:bg-black/10
-            dark:text-slate-200
-            dark:hover:bg-white/10
-          "
-          aria-label="Notifications"
-        >
-          <Bell className="h-5 w-5" />
-
-          {/* Notification indicator */}
-          <span
-            className="
-              absolute
-              right-1
-              top-1
-              h-2
-              w-2
-              rounded-full
-              bg-red-500
-            "
-          />
-        </button>
+        {/* Reminder Notifications */}
+        <ReminderNotification reminders={reminders} />
 
         {/* User Menu */}
         <UserDropdown user={user} />

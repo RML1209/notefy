@@ -6,6 +6,16 @@ import { MobileSidebar } from "./mobile-sidebar";
 import { Sidebar } from "./sidebar";
 import { TopNavbar } from "./top-navbar";
 
+interface Reminder {
+  id: string;
+  title: string;
+  content: string;
+  remindAt: Date | null;
+  isReminderSent: boolean;
+  isPinned: boolean;
+  isArchived: boolean;
+}
+
 interface DashboardLayoutProps {
   children: ReactNode;
 
@@ -15,11 +25,14 @@ interface DashboardLayoutProps {
     email?: string | null;
     image?: string | null;
   };
+
+  reminders: Reminder[];
 }
 
 export function DashboardLayout({
   children,
   user,
+  reminders,
 }: DashboardLayoutProps) {
   return (
     <div
@@ -32,7 +45,9 @@ export function DashboardLayout({
         dark:text-white
       "
     >
-      {/* Desktop Sidebar */}
+      {/* =========================================================
+          DESKTOP SIDEBAR
+      ========================================================= */}
       <aside
         className="
           fixed
@@ -53,9 +68,13 @@ export function DashboardLayout({
         <Sidebar user={user} />
       </aside>
 
-      {/* Main Content */}
+      {/* =========================================================
+          MAIN AREA
+      ========================================================= */}
       <div className="lg:pl-72">
-        {/* Top Navigation */}
+        {/* =======================================================
+            TOP NAVIGATION
+        ======================================================= */}
         <header
           className="
             sticky
@@ -63,20 +82,38 @@ export function DashboardLayout({
             z-30
             border-b
             border-slate-200
+            bg-white/90
             backdrop-blur-md
             transition-colors
-            bg-background
             dark:border-slate-800
+            dark:bg-[#111A1F]/90
           "
         >
-          <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div
+            className="
+              flex
+              h-16
+              items-center
+              justify-between
+              px-4
+              sm:px-6
+              lg:px-8
+            "
+          >
+            {/* Mobile Menu */}
             <MobileSidebar user={user} />
 
-            <TopNavbar user={user} />
+            {/* Navbar */}
+            <TopNavbar
+              user={user}
+              reminders={reminders}
+            />
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* =======================================================
+            PAGE CONTENT
+        ======================================================= */}
         <main
           className="
             min-h-[calc(100vh-64px)]
