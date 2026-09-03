@@ -1,14 +1,19 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import type { ChangeEvent, FormEvent } from "react";
 
 import {
   Camera,
   CheckCircle2,
   Mail,
+  Trash2,
+  Upload,
   User,
 } from "lucide-react";
 import Image from "next/image";
+
 import { updateProfile } from "@/actions/user/update-profile";
 
 interface ProfileFormProps {
@@ -20,26 +25,32 @@ interface ProfileFormProps {
   };
 }
 
-export function ProfileForm({
-  user,
-}: ProfileFormProps) {
-  const [name, setName] = useState(
-    user.name ?? ""
-  );
+export function ProfileForm({ user }: ProfileFormProps) {
 
-  const [image, setImage] = useState(
-    user.image ?? ""
-  );
+  const router = useRouter();
+  // --------------------------------------------------
+  // Profile state
+  // --------------------------------------------------
+
+  const [name, setName] = useState(user.name ?? "");
+  const [image, setImage] = useState(user.image ?? "");
+
+  // --------------------------------------------------
+  // UI state
+  // --------------------------------------------------
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isUploading, setIsUploading] = useState(false);
 
-  function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
+  const [isPending, startTransition] = useTransition();
+
+  // --------------------------------------------------
+  // Profile name / general information
+  // --------------------------------------------------
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setMessage("");
@@ -53,8 +64,7 @@ export function ProfileForm({
 
       if (!result.success) {
         setError(
-          result.error ??
-            "Failed to update your profile."
+          result.message ?? "Failed to update your profile."
         );
 
         return;
@@ -64,33 +74,234 @@ export function ProfileForm({
         "Your profile has been updated successfully."
       );
 
-      /*
-       * Keep the local form synchronized
-       * with the updated server response.
-       */
       if (result.user) {
         setName(result.user.name ?? "");
         setImage(result.user.image ?? "");
       }
 
-      /*
-       * Remove success message after 3 seconds.
-       */
       setTimeout(() => {
         setMessage("");
       }, 3000);
     });
   }
 
-  const displayName =
-    name.trim() || "User";
+  // --------------------------------------------------
+  // Remove profile image
+  // --------------------------------------------------
+
+ function handleRemoveImage() {
+  setMessage("");
+  setError("");
+
+  startTransition(async () => {
+    const result = await updateProfile({
+      name,
+      image: null,
+    });
+
+    if (!result.success) {
+      setError(
+        result.message ??
+          "Failed to remove your profile image."
+      );
+
+      return;
+    }
+
+    setImage("");
+
+    setMessage(
+      "Profile image removed successfully."
+    );
+
+    if (result.user) {
+      setName(result.user.name ?? "");
+      setImage(result.user.image ?? "");
+    }
+
+    router.refresh();
+
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+  });
+}
+
+  // --------------------------------------------------
+  // Upload profile image
+  // --------------------------------------------------
+
+  async function handleImageUpload(
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setMessage("");
+    setError("");
+
+    // --------------------------------------------------
+    // Allowed image types
+    // --------------------------------------------------
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setError(
+        "Only JPG, PNG, WEBP, and GIF images are allowed."
+      );
+
+      event.target.value = "";
+      return;
+    }
+
+    // --------------------------------------------------
+    // Maximum image size = 5 MB
+    // --------------------------------------------------
+
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      setError("Image must be smaller than 5 MB.");
+
+      event.target.value = "";
+      return;
+    }
+
+    // --------------------------------------------------
+    // Prepare FormData
+    // --------------------------------------------------
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    try {
+      setIsUploading(true);
+
+      // --------------------------------------------------
+      // Send image to our Next.js API
+      // --------------------------------------------------
+
+      const response = await fetch(
+        "/api/cloudinary/upload-profile",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      // --------------------------------------------------
+      // Check upload response
+      // --------------------------------------------------
+
+      if (!response.ok || !result.success) {
+        setError(
+          result.message ??
+            "Failed to upload profile image."
+        );
+
+        return;
+      }
+
+      if (!result.imageUrl) {
+        setError(
+          "Cloudinary did not return an image URL."
+        );
+
+        return;
+      }
+
+      const uploadedImageUrl = result.imageUrl;
+
+      // --------------------------------------------------
+      // Immediately update the preview
+      // --------------------------------------------------
+
+      setImage(uploadedImageUrl);
+
+      // --------------------------------------------------
+      // Save Cloudinary URL to PostgreSQL
+      // --------------------------------------------------
+
+      const profileResult = await updateProfile({
+        name: name.trim(),
+        image: uploadedImageUrl,
+      });
+
+      if (!profileResult.success) {
+        setError(
+          profileResult.message ??
+            "Image uploaded, but it could not be saved to your profile."
+        );
+
+        return;
+      }
+
+      // --------------------------------------------------
+      // Update state using database response
+      // --------------------------------------------------
+
+      if (profileResult.user) {
+        setName(profileResult.user.name ?? "");
+        setImage(profileResult.user.image ?? "");
+      }
+
+      setMessage(
+        "Profile image updated successfully."
+      );
+
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+    } catch (uploadError) {
+      console.error(
+        "Profile image upload error:",
+        uploadError
+      );
+
+      setError(
+        "Something went wrong while uploading the image."
+      );
+    } finally {
+      setIsUploading(false);
+
+      // Allow the user to select the same image again
+      event.target.value = "";
+    }
+  }
+
+  // --------------------------------------------------
+  // Display values
+  // --------------------------------------------------
+
+  const displayName = name.trim() || "User";
 
   const avatarLetter =
     displayName.charAt(0).toUpperCase();
 
+  const isBusy = isUploading || isPending;
+
+  // --------------------------------------------------
+  // UI
+  // --------------------------------------------------
+
   return (
     <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-      {/* Profile Preview */}
+      {/* ==================================================
+          PROFILE PREVIEW
+          ================================================== */}
+
       <section
         className="
           rounded-2xl
@@ -111,6 +322,9 @@ export function ProfileForm({
               <Image
                 src={image}
                 alt={displayName}
+                width={112}
+                height={112}
+                priority
                 className="
                   h-28
                   w-28
@@ -142,6 +356,7 @@ export function ProfileForm({
               </div>
             )}
 
+            {/* Camera badge */}
             <div
               className="
                 absolute
@@ -164,6 +379,7 @@ export function ProfileForm({
             </div>
           </div>
 
+          {/* Name */}
           <h2
             className="
               mt-5
@@ -176,6 +392,7 @@ export function ProfileForm({
             {displayName}
           </h2>
 
+          {/* Email */}
           <p
             className="
               mt-1
@@ -188,6 +405,7 @@ export function ProfileForm({
             {user.email}
           </p>
 
+          {/* Account status */}
           <div
             className="
               mt-4
@@ -211,7 +429,10 @@ export function ProfileForm({
         </div>
       </section>
 
-      {/* Profile Form */}
+      {/* ==================================================
+          PROFILE FORM
+          ================================================== */}
+
       <section
         className="
           rounded-2xl
@@ -226,6 +447,7 @@ export function ProfileForm({
           sm:p-8
         "
       >
+        {/* Header */}
         <div className="mb-8">
           <h2
             className="
@@ -254,7 +476,10 @@ export function ProfileForm({
           onSubmit={handleSubmit}
           className="space-y-6"
         >
-          {/* Name */}
+          {/* ==================================================
+              NAME
+              ================================================== */}
+
           <div>
             <label
               htmlFor="name"
@@ -291,7 +516,7 @@ export function ProfileForm({
                   setName(event.target.value)
                 }
                 maxLength={100}
-                disabled={isPending}
+                disabled={isBusy}
                 placeholder="Enter your name"
                 className="
                   h-11
@@ -324,7 +549,10 @@ export function ProfileForm({
             </p>
           </div>
 
-          {/* Email */}
+          {/* ==================================================
+              EMAIL
+              ================================================== */}
+
           <div>
             <label
               htmlFor="email"
@@ -380,15 +608,18 @@ export function ProfileForm({
             </div>
 
             <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              Your email address is managed by your
-              account and cannot be changed here.
+              Your email address is managed by your account and
+              cannot be changed here.
             </p>
           </div>
 
-          {/* Profile Image */}
+          {/* ==================================================
+              PROFILE IMAGE
+              ================================================== */}
+
           <div>
             <label
-              htmlFor="image"
+              htmlFor="profile-image"
               className="
                 mb-2
                 block
@@ -401,61 +632,166 @@ export function ProfileForm({
               Profile image
             </label>
 
-            <div className="relative">
-              <Camera
-                className="
-                  absolute
-                  left-3
-                  top-1/2
-                  h-5
-                  w-5
-                  -translate-y-1/2
-                  text-slate-400
-                "
-              />
+            <div
+              className="
+                rounded-2xl
+                border
+                border-dashed
+                border-slate-300
+                bg-slate-50
+                p-5
+                dark:border-slate-700
+                dark:bg-[#0B1215]
+              "
+            >
+              <div className="flex flex-col items-center gap-4 sm:flex-row">
+                {/* Small Preview */}
+                {image.trim() ? (
+                  <Image
+                    src={image}
+                    alt={displayName}
+                    width={80}
+                    height={80}
+                    className="
+                      h-20
+                      w-20
+                      shrink-0
+                      rounded-full
+                      border-2
+                      border-slate-200
+                      object-cover
+                      dark:border-slate-700
+                    "
+                  />
+                ) : (
+                  <div
+                    className="
+                      flex
+                      h-20
+                      w-20
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-[#6A89A7]
+                      text-2xl
+                      font-bold
+                      text-white
+                    "
+                  >
+                    {avatarLetter}
+                  </div>
+                )}
 
-              <input
-                id="image"
-                type="url"
-                value={image}
-                onChange={(event) =>
-                  setImage(event.target.value)
-                }
-                disabled={isPending}
-                placeholder="https://example.com/profile.jpg"
-                className="
-                  h-11
-                  w-full
-                  rounded-xl
-                  border
-                  border-slate-300
-                  bg-white
-                  pl-10
-                  pr-4
-                  text-sm
-                  text-slate-900
-                  outline-none
-                  transition
-                  focus:border-[#6A89A7]
-                  focus:ring-2
-                  focus:ring-[#6A89A7]/20
-                  disabled:cursor-not-allowed
-                  disabled:opacity-60
-                  dark:border-slate-700
-                  dark:bg-[#0B1215]
-                  dark:text-white
-                  dark:focus:border-[#6A89A7]
-                "
-              />
+                {/* Upload controls */}
+                <div className="flex flex-1 flex-col items-center gap-3 sm:items-start">
+                  <div>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white">
+                      {image.trim()
+                        ? "Profile image selected"
+                        : "Choose a profile image"}
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      Upload a JPG, PNG, WEBP, or GIF image.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
+                    {/* ==================================================
+                        CUSTOM IMAGE UPLOAD
+                        ================================================== */}
+
+                    <label
+                      htmlFor="profile-image"
+                      className={`
+                        inline-flex
+                        items-center
+                        gap-2
+                        rounded-xl
+                        bg-[#6A89A7]
+                        px-4
+                        py-2.5
+                        text-sm
+                        font-semibold
+                        text-white
+                        shadow-sm
+                        transition
+                        hover:bg-[#587690]
+                        ${
+                          isBusy
+                            ? "cursor-not-allowed opacity-60"
+                            : "cursor-pointer"
+                        }
+                      `}
+                    >
+                      <Upload className="h-4 w-4" />
+
+                      {isUploading
+                        ? "Uploading..."
+                        : "Choose Image"}
+                    </label>
+
+                    {/* Hidden browser file input */}
+                    <input
+                      id="profile-image"
+                      name="profile-image"
+                      type="file"
+                      accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif"
+                      onChange={handleImageUpload}
+                      disabled={isBusy}
+                      className="hidden"
+                    />
+
+                    {/* ==================================================
+                        REMOVE IMAGE
+                        ================================================== */}
+
+                    {image.trim() && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        disabled={isBusy}
+                        className="
+                          inline-flex
+                          items-center
+                          gap-2
+                          rounded-xl
+                          border
+                          border-slate-300
+                          px-4
+                          py-2.5
+                          text-sm
+                          font-medium
+                          text-slate-700
+                          transition
+                          hover:bg-slate-100
+                          disabled:cursor-not-allowed
+                          disabled:opacity-60
+                          dark:border-slate-700
+                          dark:text-slate-300
+                          dark:hover:bg-slate-800
+                        "
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              Enter a public image URL for now. We
-              can integrate Cloudinary later.
+              Maximum file size: 5 MB. Only image files are
+              accepted.
             </p>
           </div>
 
-          {/* Messages */}
+          {/* ==================================================
+              SUCCESS MESSAGE
+              ================================================== */}
+
           {message && (
             <div
               className="
@@ -475,6 +811,10 @@ export function ProfileForm({
               ✓ {message}
             </div>
           )}
+
+          {/* ==================================================
+              ERROR MESSAGE
+              ================================================== */}
 
           {error && (
             <div
@@ -496,11 +836,23 @@ export function ProfileForm({
             </div>
           )}
 
-          {/* Submit */}
-          <div className="flex justify-end border-t border-slate-200 pt-6 dark:border-slate-700">
+          {/* ==================================================
+              SAVE CHANGES
+              ================================================== */}
+
+          <div
+            className="
+              flex
+              justify-end
+              border-t
+              border-slate-200
+              pt-6
+              dark:border-slate-700
+            "
+          >
             <button
               type="submit"
-              disabled={isPending}
+              disabled={isBusy}
               className="
                 rounded-xl
                 bg-[#6A89A7]

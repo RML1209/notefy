@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
+import Image from "next/image";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 import {
   ChevronDown,
@@ -10,8 +11,6 @@ import {
   Settings,
   User,
 } from "lucide-react";
-
-import { signOut } from "next-auth/react";
 
 interface UserDropdownProps {
   user: {
@@ -29,6 +28,10 @@ export function UserDropdown({
 
   const dropdownRef =
     useRef<HTMLDivElement>(null);
+
+  // --------------------------------------------------
+  // Close dropdown when clicking outside
+  // --------------------------------------------------
 
   useEffect(() => {
     function handleClickOutside(
@@ -49,12 +52,17 @@ export function UserDropdown({
       handleClickOutside
     );
 
-    return () =>
+    return () => {
       document.removeEventListener(
         "mousedown",
         handleClickOutside
       );
+    };
   }, []);
+
+  // --------------------------------------------------
+  // Logout
+  // --------------------------------------------------
 
   async function handleLogout() {
     await signOut({
@@ -62,90 +70,308 @@ export function UserDropdown({
     });
   }
 
+  // --------------------------------------------------
+  // User display values
+  // --------------------------------------------------
+
+  const displayName =
+    user.name?.trim() || "User";
+
+  const avatarLetter =
+    displayName.charAt(0).toUpperCase();
+
+  const profileImage =
+    user.image?.trim() || null;
+
+  // --------------------------------------------------
+  // Avatar component
+  // --------------------------------------------------
+
+  function Avatar({
+    size = "medium",
+  }: {
+    size?: "small" | "medium" | "large";
+  }) {
+    const sizeClasses = {
+      small: "h-8 w-8",
+      medium: "h-10 w-10",
+      large: "h-12 w-12",
+    };
+
+    const imageSize = {
+      small: 32,
+      medium: 40,
+      large: 48,
+    };
+
+    return profileImage ? (
+      <Image
+        src={profileImage}
+        alt={`${displayName}'s profile picture`}
+        width={imageSize[size]}
+        height={imageSize[size]}
+        className={`
+          ${sizeClasses[size]}
+          shrink-0
+          rounded-full
+          border
+          border-slate-200
+          object-cover
+          dark:border-slate-700
+        `}
+      />
+    ) : (
+      <div
+        className={`
+          ${sizeClasses[size]}
+          flex
+          shrink-0
+          items-center
+          justify-center
+          rounded-full
+          bg-[#6A89A7]
+          font-semibold
+          text-white
+        `}
+      >
+        {avatarLetter}
+      </div>
+    );
+  }
+
+  // --------------------------------------------------
+  // UI
+  // --------------------------------------------------
+
   return (
     <div
       ref={dropdownRef}
       className="relative"
     >
-      {/* Trigger */}
+      {/* ==================================================
+          DROPDOWN TRIGGER
+          ================================================== */}
+
       <button
-        onClick={() =>
-          setOpen(!open)
-        }
-        className="flex items-center gap-3  bg-white px-3 py-2 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-[#111A1F] dark:hover:bg-slate-800"
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className="
+          flex
+          items-center
+          gap-3
+          rounded-xl
+          bg-white
+          px-3
+          py-2
+          transition
+          hover:bg-slate-100
+          dark:bg-[#111A1F]
+          dark:hover:bg-slate-800
+        "
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#6A89A7] font-semibold text-white">
-          {user.name
-            ?.charAt(0)
-            .toUpperCase() ?? "U"}
-        </div>
+        {/* Avatar */}
+
+        <Avatar size="medium" />
+
+        {/* User information */}
 
         <div className="hidden text-left lg:block">
-          <p className="text-sm font-semibold text-slate-900 dark:text-white">
-            {user.name ?? "User"}
+          <p
+            className="
+              max-w-[180px]
+              truncate
+              text-sm
+              font-semibold
+              text-slate-900
+              dark:text-white
+            "
+          >
+            {displayName}
           </p>
 
-          <p className="max-w-[180px] truncate text-xs text-slate-500 dark:text-slate-400">
-            {user.email}
+          <p
+            className="
+              max-w-[180px]
+              truncate
+              text-xs
+              text-slate-500
+              dark:text-slate-400
+            "
+          >
+            {user.email ?? ""}
           </p>
         </div>
 
+        {/* Arrow */}
+
         <ChevronDown
-          className={`h-4 w-4 transition-transform ${
-            open
-              ? "rotate-180"
-              : ""
-          }`}
+          className={`
+            h-4
+            w-4
+            text-slate-500
+            transition-transform
+            dark:text-slate-400
+            ${
+              open
+                ? "rotate-180"
+                : ""
+            }
+          `}
         />
       </button>
 
-      {/* Dropdown */}
-      {open && (
-        <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-[#111A1F]">
-          {/* User Info */}
-          <div className="border-b border-slate-200 p-4 dark:border-slate-700">
-            <p className="font-semibold text-slate-900 dark:text-white">
-              {user.name ?? "User"}
-            </p>
+      {/* ==================================================
+          DROPDOWN MENU
+          ================================================== */}
 
-            <p className="truncate text-sm text-slate-500 dark:text-slate-400">
-              {user.email}
-            </p>
+      {open && (
+        <div
+          className="
+            absolute
+            right-0
+            z-50
+            mt-3
+            w-72
+            overflow-hidden
+            rounded-2xl
+            border
+            border-slate-200
+            bg-white
+            shadow-xl
+            dark:border-slate-700
+            dark:bg-[#111A1F]
+          "
+          role="menu"
+        >
+          {/* ==================================================
+              USER INFORMATION
+              ================================================== */}
+
+          <div
+            className="
+              border-b
+              border-slate-200
+              p-4
+              dark:border-slate-700
+            "
+          >
+            <div className="flex items-center gap-3">
+              {/* Larger avatar */}
+
+              <Avatar size="large" />
+
+              {/* Name + email */}
+
+              <div className="min-w-0 flex-1">
+                <p
+                  className="
+                    truncate
+                    font-semibold
+                    text-slate-900
+                    dark:text-white
+                  "
+                >
+                  {displayName}
+                </p>
+
+                <p
+                  className="
+                    truncate
+                    text-sm
+                    text-slate-500
+                    dark:text-slate-400
+                  "
+                >
+                  {user.email ?? ""}
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Menu */}
+          {/* ==================================================
+              MENU ITEMS
+              ================================================== */}
+
           <div className="p-2">
+            {/* Profile */}
+
             <Link
               href="/profile"
-              onClick={() =>
-                setOpen(false)
-              }
-              className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              onClick={() => setOpen(false)}
+              role="menuitem"
+              className="
+                flex
+                items-center
+                gap-3
+                rounded-xl
+                px-3
+                py-3
+                text-sm
+                text-slate-700
+                transition
+                hover:bg-slate-100
+                dark:text-slate-200
+                dark:hover:bg-slate-800
+              "
             >
               <User className="h-5 w-5" />
 
-              Profile
+              <span>Profile</span>
             </Link>
+
+            {/* Settings */}
 
             <Link
               href="/settings"
-              onClick={() =>
-                setOpen(false)
-              }
-              className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              onClick={() => setOpen(false)}
+              role="menuitem"
+              className="
+                flex
+                items-center
+                gap-3
+                rounded-xl
+                px-3
+                py-3
+                text-sm
+                text-slate-700
+                transition
+                hover:bg-slate-100
+                dark:text-slate-200
+                dark:hover:bg-slate-800
+              "
             >
               <Settings className="h-5 w-5" />
 
-              Settings
+              <span>Settings</span>
             </Link>
 
+            {/* Logout */}
+
             <button
+              type="button"
               onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm text-red-600 transition hover:bg-red-50 dark:hover:bg-red-950/30"
+              role="menuitem"
+              className="
+                flex
+                w-full
+                items-center
+                gap-3
+                rounded-xl
+                px-3
+                py-3
+                text-left
+                text-sm
+                text-red-600
+                transition
+                hover:bg-red-50
+                dark:hover:bg-red-950/30
+              "
             >
               <LogOut className="h-5 w-5" />
 
-              Logout
+              <span>Logout</span>
             </button>
           </div>
         </div>

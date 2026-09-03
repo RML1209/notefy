@@ -1,7 +1,7 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-
 import { usePathname } from "next/navigation";
 
 import {
@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 
@@ -66,33 +65,123 @@ export function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
 
+  // --------------------------------------------------
+  // User display values
+  // --------------------------------------------------
+
+  const displayName =
+    user.name?.trim() || "User";
+
+  const avatarLetter =
+    displayName.charAt(0).toUpperCase();
+
+  const profileImage =
+    user.image?.trim() || null;
+
   return (
     <div className="flex h-full flex-col">
-      {/* Logo */}
-      <div className="border-b border-slate-200 p-6 dark:border-slate-800">
+      {/* ==================================================
+          LOGO
+          ================================================== */}
+
+      <div
+        className="
+          border-b
+          border-slate-200
+          p-6
+          dark:border-slate-800
+        "
+      >
         <Logo />
       </div>
 
-      {/* User */}
-      <div className="border-b border-slate-200 px-6 py-5 dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6A89A7] text-lg font-semibold text-white">
-            {user.name?.charAt(0).toUpperCase() ?? "U"}
-          </div>
+      {/* ==================================================
+          USER PROFILE
+          ================================================== */}
 
-          <div className="min-w-0">
-            <p className="truncate font-semibold text-slate-900 dark:text-white">
-              {user.name ?? "User"}
+      <div
+        className="
+          border-b
+          border-slate-200
+          px-6
+          py-5
+          dark:border-slate-800
+        "
+      >
+        <div className="flex items-center gap-3">
+          {/* Profile Avatar */}
+
+          {profileImage ? (
+            <Image
+              src={profileImage}
+              alt={`${displayName}'s profile picture`}
+              width={44}
+              height={44}
+              className="
+                h-11
+                w-11
+                shrink-0
+                rounded-full
+                border
+                border-slate-200
+                object-cover
+                shadow-sm
+                dark:border-slate-700
+              "
+            />
+          ) : (
+            <div
+              className="
+                flex
+                h-11
+                w-11
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-[#6A89A7]
+                text-lg
+                font-semibold
+                text-white
+                shadow-sm
+              "
+            >
+              {avatarLetter}
+            </div>
+          )}
+
+          {/* User Information */}
+
+          <div className="min-w-0 flex-1">
+            <p
+              className="
+                truncate
+                font-semibold
+                text-slate-900
+                dark:text-white
+              "
+            >
+              {displayName}
             </p>
 
-            <p className="truncate text-sm text-slate-500 dark:text-slate-400">
-              {user.email}
+            <p
+              className="
+                truncate
+                text-sm
+                text-slate-500
+                dark:text-slate-400
+              "
+            >
+              {user.email ?? ""}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* ==================================================
+          NAVIGATION
+          ================================================== */}
+
       <nav className="flex-1 space-y-2 p-4">
         {navigation.map((item) => {
           const Icon = item.icon;
@@ -105,25 +194,65 @@ export function Sidebar({
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200",
+                `
+                  flex
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-4
+                  py-3
+                  text-sm
+                  font-medium
+                  transition-all
+                  duration-200
+                `,
                 active
-                  ? "bg-[#6A89A7] text-white shadow-md"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                  ? `
+                      bg-[#6A89A7]
+                      text-white
+                      shadow-md
+                    `
+                  : `
+                      text-slate-700
+                      hover:bg-slate-100
+                      dark:text-slate-300
+                      dark:hover:bg-slate-800
+                    `
               )}
             >
               <Icon className="h-5 w-5" />
 
-              {item.title}
+              <span>{item.title}</span>
             </Link>
           );
         })}
       </nav>
 
-      {/* Logout */}
-      <div className="border-t border-slate-200 p-4 dark:border-slate-800">
+      {/* ==================================================
+          LOGOUT
+          ================================================== */}
+
+      <div
+        className="
+          border-t
+          border-slate-200
+          p-4
+          dark:border-slate-800
+        "
+      >
         <Button
+          type="button"
           variant="outline"
-          className="w-full justify-start"
+          className="
+            w-full
+            justify-start
+            border-slate-200
+            text-slate-700
+            hover:bg-slate-100
+            dark:border-slate-700
+            dark:text-slate-300
+            dark:hover:bg-slate-800
+          "
         >
           <LogOut className="mr-2 h-5 w-5" />
 

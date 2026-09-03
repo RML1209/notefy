@@ -4,83 +4,73 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 interface UpdateProfileInput {
-  name?: string;
+  name: string;
   image?: string | null;
 }
 
 interface UpdateProfileResult {
   success: boolean;
-  user: {
+  message: string;
+  user?: {
     id: string;
     name: string | null;
     email: string | null;
     image: string | null;
-  } | null;
-  error: string | null;
+  };
 }
 
 export async function updateProfile(
   input: UpdateProfileInput
 ): Promise<UpdateProfileResult> {
   try {
-    // Get the authenticated user
+    // Make sure the user is authenticated.
     const session = await auth();
 
     if (!session?.user?.id) {
       return {
         success: false,
-        user: null,
-        error: "Unauthorized.",
+        message: "You must be logged in to update your profile.",
       };
     }
 
-    /*
-     * Clean the name.
-     */
-    const name =
-      typeof input.name === "string"
-        ? input.name.trim()
-        : undefined;
+    // Validate name.
+    const name = input.name.trim();
 
-    /*
-     * Validate the name if it was provided.
-     */
-    if (name !== undefined) {
-      if (name.length === 0) {
-        return {
-          success: false,
-          user: null,
-          error: "Name cannot be empty.",
-        };
-      }
-
-      if (name.length > 100) {
-        return {
-          success: false,
-          user: null,
-          error: "Name cannot exceed 100 characters.",
-        };
-      }
+    if (!name) {
+      return {
+        success: false,
+        message: "Name is required.",
+      };
     }
 
-    /*
-     * Update only profile fields.
-     *
-     * IMPORTANT:
-     * Email is intentionally NOT included here.
-     */
-    const user = await prisma.user.update({
+    if (name.length < 2) {
+      return {
+        success: false,
+        message: "Name must contain at least 2 characters.",
+      };
+    }
+
+    if (name.length > 100) {
+      return {
+        success: false,
+        message: "Name must not exceed 100 characters.",
+      };
+    }
+
+    // Update only fields that the user is allowed to change.
+    //
+    // Email is intentionally NOT included here.
+    const updatedUser = await prisma.user.update({
       where: {
         id: session.user.id,
       },
       data: {
-        ...(name !== undefined && {
-          name,
-        }),
-
-        ...(input.image !== undefined && {
-          image: input.image,
-        }),
+        name,
+        ...(input.image !== undefined
+          ? {
+              image: input.image,
+            }
+          : {}),
       },
       select: {
         id: true,
@@ -92,16 +82,18 @@ export async function updateProfile(
 
     return {
       success: true,
-      user,
-      error: null,
+      message: "Profile updated successfully.",
+      user: updatedUser,
     };
   } catch (error) {
     console.error("Failed to update profile:", error);
 
     return {
       success: false,
-      user: null,
-      error: "Failed to update profile.",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to update profile.",
     };
   }
 }

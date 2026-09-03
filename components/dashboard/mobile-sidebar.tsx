@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-
 import { Logo } from "@/components/ui/logo";
 
 interface MobileSidebarProps {
@@ -69,65 +68,203 @@ export function MobileSidebar({
 
   const [open, setOpen] = useState(false);
 
+  // --------------------------------------------------
+  // User display values
+  // --------------------------------------------------
+
+  const displayName =
+    user.name?.trim() || "User";
+
+  const avatarLetter =
+    displayName.charAt(0).toUpperCase();
+
+  const profileImage =
+    user.image?.trim() || null;
+
   return (
     <>
-      {/* Menu Button */}
+      {/* ==================================================
+          MENU BUTTON
+          ================================================== */}
+
       <button
+        type="button"
         onClick={() => setOpen(true)}
-        className="rounded-lg p-2 transition hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden"
+        aria-label="Open navigation menu"
+        aria-expanded={open}
+        className="
+          rounded-lg
+          p-2
+          transition
+          hover:bg-slate-100
+          dark:hover:bg-slate-800
+          lg:hidden
+        "
       >
         <Menu className="h-6 w-6" />
       </button>
 
-      {/* Overlay */}
+      {/* ==================================================
+          OVERLAY
+          ================================================== */}
+
       {open && (
         <div
           onClick={() => setOpen(false)}
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="
+            fixed
+            inset-0
+            z-40
+            bg-black/50
+            lg:hidden
+          "
         />
       )}
 
-      {/* Drawer */}
+      {/* ==================================================
+          MOBILE DRAWER
+          ================================================== */}
+
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-[#111A1F] shadow-xl transition-transform duration-300 lg:hidden",
+          `
+            fixed
+            inset-y-0
+            left-0
+            z-50
+            w-72
+            bg-white
+            shadow-xl
+            transition-transform
+            duration-300
+            dark:bg-[#111A1F]
+            lg:hidden
+          `,
           open
             ? "translate-x-0"
             : "-translate-x-full"
         )}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-800">
+        {/* ==================================================
+            HEADER
+            ================================================== */}
+
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-slate-200
+            p-5
+            dark:border-slate-800
+          "
+        >
           <Logo />
 
           <button
+            type="button"
             onClick={() => setOpen(false)}
-            className="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800"
+            aria-label="Close navigation menu"
+            className="
+              rounded-lg
+              p-2
+              transition
+              hover:bg-slate-100
+              dark:hover:bg-slate-800
+            "
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* User */}
-        <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6A89A7] font-semibold text-white">
-              {user.name?.charAt(0).toUpperCase() ?? "U"}
-            </div>
+        {/* ==================================================
+            USER PROFILE
+            ================================================== */}
 
-            <div className="min-w-0">
-              <p className="truncate font-semibold text-slate-900 dark:text-white">
-                {user.name ?? "User"}
+        <div
+          className="
+            border-b
+            border-slate-200
+            px-5
+            py-4
+            dark:border-slate-800
+          "
+        >
+          <div className="flex items-center gap-3">
+            {/* Profile Avatar */}
+
+            {profileImage ? (
+              <Image
+                src={profileImage}
+                alt={`${displayName}'s profile picture`}
+                width={44}
+                height={44}
+                className="
+                  h-11
+                  w-11
+                  shrink-0
+                  rounded-full
+                  border
+                  border-slate-200
+                  object-cover
+                  shadow-sm
+                  dark:border-slate-700
+                "
+              />
+            ) : (
+              <div
+                className="
+                  flex
+                  h-11
+                  w-11
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[#6A89A7]
+                  text-lg
+                  font-semibold
+                  text-white
+                  shadow-sm
+                "
+              >
+                {avatarLetter}
+              </div>
+            )}
+
+            {/* User Information */}
+
+            <div className="min-w-0 flex-1">
+              <p
+                className="
+                  truncate
+                  font-semibold
+                  text-slate-900
+                  dark:text-white
+                "
+              >
+                {displayName}
               </p>
 
-              <p className="truncate text-sm text-slate-500 dark:text-slate-400">
-                {user.email}
+              <p
+                className="
+                  truncate
+                  text-sm
+                  text-slate-500
+                  dark:text-slate-400
+                "
+              >
+                {user.email ?? ""}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* ==================================================
+            NAVIGATION
+            ================================================== */}
+
         <nav className="flex flex-col gap-2 p-4">
           {navigation.map((item) => {
             const Icon = item.icon;
@@ -143,15 +280,35 @@ export function MobileSidebar({
                   setOpen(false)
                 }
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200",
+                  `
+                    flex
+                    items-center
+                    gap-3
+                    rounded-xl
+                    px-4
+                    py-3
+                    text-sm
+                    font-medium
+                    transition-all
+                    duration-200
+                  `,
                   active
-                    ? "bg-[#6A89A7] text-white"
-                    : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                    ? `
+                        bg-[#6A89A7]
+                        text-white
+                        shadow-sm
+                      `
+                    : `
+                        text-slate-700
+                        hover:bg-slate-100
+                        dark:text-slate-300
+                        dark:hover:bg-slate-800
+                      `
                 )}
               >
                 <Icon className="h-5 w-5" />
 
-                {item.title}
+                <span>{item.title}</span>
               </Link>
             );
           })}
