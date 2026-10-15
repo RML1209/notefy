@@ -1,9 +1,6 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-
-import { cn } from "@/lib/utils";
 
 interface LogoProps {
   href?: string;
@@ -20,18 +17,9 @@ interface LogoProps {
 }
 
 export function Logo({
-  href = "/",
-  size = 120,
-  className,
+  size = 100,
 }: LogoProps) {
   return (
-    <Link
-      href={href}
-      className={cn(
-        "inline-flex items-center gap-3",
-        className
-      )}
-    >
       <Image
         src="/notefy-logo.png"
         alt="Notefy Logo"
@@ -39,10 +27,9 @@ export function Logo({
         height={size}
         priority
         unoptimized
-    
-        className="rounded-xl object-contain "
+
+        className="rounded-xl h-auto w-32 object-contain"
       />
 
-    </Link>
   );
 }

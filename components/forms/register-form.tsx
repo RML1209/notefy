@@ -129,7 +129,7 @@ export function RegisterForm() {
         {isPending ? (
           <>
             <Spinner
-              size={18}
+              size="sm"
               className="mr-2"
             />
             Creating Account...

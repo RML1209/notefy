@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-
 import { useRouter, useSearchParams } from "next/navigation";
-
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -22,42 +20,34 @@ import { FormSuccess } from "@/components/ui/form-success";
 
 export function VerifyEmailForm() {
   const router = useRouter();
-
   const searchParams = useSearchParams();
 
-  const email =
-    searchParams.get("email") ?? "";
+  const email = searchParams.get("email") ?? "";
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [error, setError] =
-    useState("");
+  const form = useForm<VerifyEmailInput>({
+    resolver: zodResolver(VerifyEmailSchema),
+    defaultValues: {
+      email,
+      token: "",
+    },
+  });
 
-  const [success, setSuccess] =
-    useState("");
+  // Subscribe to the token field without using form.watch().
+  const token = useWatch({
+    control: form.control,
+    name: "token",
+  });
 
-  const form =
-    useForm<VerifyEmailInput>({
-      resolver: zodResolver(
-        VerifyEmailSchema
-      ),
-
-      defaultValues: {
-        email,
-        token: "",
-      },
-    });
-
-  function onSubmit(
-    values: VerifyEmailInput
-  ) {
+  function onSubmit(values: VerifyEmailInput) {
     setError("");
     setSuccess("");
 
     startTransition(async () => {
-      const result =
-        await verifyEmail(values);
+      const result = await verifyEmail(values);
 
       if (result.error) {
         setError(result.error);
@@ -75,47 +65,31 @@ export function VerifyEmailForm() {
   }
 
   return (
-    <form
-      onSubmit={form.handleSubmit(
-        onSubmit
-      )}
-      className="space-y-5"
-    >
-      <input
-        type="hidden"
-        {...form.register("email")}
-      />
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <input type="hidden" {...form.register("email")} />
 
-<OTPInput
-  label="Verification Code"
-  value={form.watch("token")}
-  onChange={(value) =>
-    form.setValue("token", value, {
-      shouldValidate: true,
-    })
-  }
-  length={6}
-  disabled={isPending}
-  error={form.formState.errors.token?.message}
-/>
+      <OTPInput
+        label="Verification Code"
+        value={token ?? ""}
+        onChange={(value) =>
+          form.setValue("token", value, {
+            shouldValidate: true,
+            shouldDirty: true,
+          })
+        }
+        length={6}
+        disabled={isPending}
+        error={form.formState.errors.token?.message}
+      />
 
       <FormError message={error} />
 
-      <FormSuccess
-        message={success}
-      />
+      <FormSuccess message={success} />
 
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={isPending}
-      >
+      <Button type="submit" className="w-full" disabled={isPending}>
         {isPending ? (
           <>
-            <Spinner
-              size={18}
-              className="mr-2"
-            />
+            <Spinner size="sm" className="mr-2" />
             Verifying...
           </>
         ) : (
@@ -127,9 +101,7 @@ export function VerifyEmailForm() {
         type="button"
         variant="ghost"
         className="w-full"
-        onClick={() =>
-          router.push("/register")
-        }
+        onClick={() => router.push("/register")}
         disabled={isPending}
       >
         Resend Verification Code

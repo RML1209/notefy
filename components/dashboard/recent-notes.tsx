@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-
 import { Pin } from "lucide-react";
-
 import { format } from "date-fns";
 
 interface RecentNote {
@@ -20,68 +18,145 @@ interface RecentNotesProps {
   notes: RecentNote[];
 }
 
-export function RecentNotes({
-  notes,
-}: RecentNotesProps) {
+export function RecentNotes({ notes }: RecentNotesProps) {
   return (
     <section
       className="
+        w-full
+        min-w-0
+        overflow-hidden
         rounded-2xl
         border
         border-blue-200
-        dark:border-slate-700
-        border-border
         bg-surface
-        p-6
         text-foreground
         shadow-sm
         transition-colors
         duration-200
+        dark:border-slate-700
+
+        p-3
+        xs:p-4
+        sm:p-5
+        lg:p-6
+        xl:p-7
       "
     >
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-foreground">
+      {/* ============================================
+          HEADER
+      ============================================ */}
+      <header
+        className="
+          mb-4
+          flex
+          min-w-0
+          flex-wrap
+          items-center
+          justify-between
+          gap-x-3
+          gap-y-2
+
+          sm:mb-5
+          lg:mb-6
+        "
+      >
+        {/* Heading */}
+        <div className="min-w-0 flex-1">
+          <h2
+            className="
+              truncate
+              text-base
+              font-semibold
+              leading-tight
+              text-foreground
+
+              sm:text-lg
+              lg:text-xl
+            "
+          >
             Recent Notes
           </h2>
 
-          <p className="mt-1 text-sm text-muted">
+          <p
+            className="
+              mt-1
+              truncate
+              text-xs
+              leading-relaxed
+              text-muted
+
+              sm:text-sm
+            "
+          >
             Your recently updated notes.
           </p>
         </div>
 
+        {/* View All */}
         <Link
           href="/notes"
           className="
-            text-sm
+            inline-flex
+            min-h-8
+            shrink-0
+            items-center
+            justify-center
+            rounded-lg
+            px-2
+            py-1
+            text-xs
             font-medium
             text-primary
-            transition-opacity
-            hover:opacity-80
+            transition-all
+            duration-200
+
+            hover:bg-surface-secondary
             hover:underline
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-primary
+            focus-visible:ring-offset-2
+
+            sm:min-h-9
+            sm:px-3
+            sm:text-sm
           "
         >
           View all
         </Link>
-      </div>
+      </header>
 
-      {/* Empty State */}
+      {/* ============================================
+          EMPTY STATE
+      ============================================ */}
       {notes.length === 0 ? (
         <div
           className="
+            w-full
             rounded-xl
             border
             border-dashed
             border-border
             bg-surface-secondary
-            p-8
+            px-4
+            py-8
             text-center
             transition-colors
             duration-200
+
+            sm:px-6
+            sm:py-10
           "
         >
-          <p className="text-sm text-muted">
+          <p
+            className="
+              text-xs
+              leading-relaxed
+              text-muted
+
+              sm:text-sm
+            "
+          >
             You dont have any notes yet.
           </p>
 
@@ -89,87 +164,183 @@ export function RecentNotes({
             href="/notes/new"
             className="
               mt-3
-              inline-block
-              text-sm
+              inline-flex
+              min-h-9
+              items-center
+              justify-center
+              rounded-lg
+              px-3
+              py-2
+              text-xs
               font-medium
               text-primary
+              transition-all
+              duration-200
+              hover:bg-surface
               hover:underline
+              focus-visible:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-primary
+
+              sm:text-sm
             "
           >
             Create your first note
           </Link>
         </div>
       ) : (
-        /* Notes */
-        <div className="space-y-3">
+        /* ============================================
+            NOTES LIST
+        ============================================ */
+        <div
+          className="
+            grid
+            w-full
+            min-w-0
+            grid-cols-1
+            gap-2.5
+
+            sm:gap-3
+          "
+        >
           {notes.map((note) => (
             <Link
               key={note.id}
               href={`/notes/${note.id}`}
               className="
+                group
+                relative
                 block
+                w-full
+                min-w-0
+                overflow-hidden
                 rounded-xl
                 border
                 border-blue-200
-                dark:border-slate-700
                 bg-surface-secondary
-                p-4
                 transition-all
                 duration-200
+
                 hover:border-primary
                 hover:shadow-sm
+
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-primary
+                focus-visible:ring-offset-2
+
+                dark:border-slate-700
+
+                p-3
+                sm:p-4
+                lg:p-5
               "
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  {/* Title */}
-                  <div className="flex items-center gap-2">
+              <div
+                className="
+                  flex
+                  min-w-0
+                  flex-col
+                  gap-2
+
+                  sm:flex-row
+                  sm:items-start
+                  sm:justify-between
+                  sm:gap-4
+                "
+              >
+                {/* ========================================
+                    NOTE INFORMATION
+                ======================================== */}
+                <div
+                  className="
+                    min-w-0
+                    flex-1
+                  "
+                >
+                  {/* Title Row */}
+                  <div
+                    className="
+                      flex
+                      min-w-0
+                      items-center
+                      gap-2
+                    "
+                  >
+                    {/* Pin */}
                     {note.isPinned && (
                       <Pin
                         className="
-                          h-4
-                          w-4
+                          h-3.5
+                          w-3.5
                           shrink-0
                           fill-amber-500
                           text-amber-500
+
+                          sm:h-4
+                          sm:w-4
                         "
+                        aria-label="Pinned note"
                       />
                     )}
 
+                    {/* Title */}
                     <h3
                       className="
+                        min-w-0
+                        flex-1
                         truncate
+                        text-sm
                         font-semibold
+                        leading-5
                         text-foreground
+                        transition-colors
+                        duration-200
+                        group-hover:text-primary
+
+                        sm:text-base
                       "
                     >
                       {note.title}
                     </h3>
                   </div>
 
-                  {/* Content */}
+                  {/* Note Content */}
                   <p
                     className="
-                      mt-1
+                      mt-1.5
                       line-clamp-2
-                      text-sm
+                      text-xs
+                      leading-relaxed
                       text-muted
+
+                      sm:mt-2
+                      sm:text-sm
                     "
                   >
                     {note.content}
                   </p>
                 </div>
 
-                {/* Updated date */}
-                <span
+                {/* ========================================
+                    UPDATED DATE
+                ======================================== */}
+                <time
+                  dateTime={note.updatedAt.toISOString()}
                   className="
                     shrink-0
-                    text-xs
+                    self-start
+                    whitespace-nowrap
+                    text-[10px]
+                    font-medium
                     text-muted
+
+                    sm:pt-0.5
+                    sm:text-xs
                   "
                 >
                   {format(note.updatedAt, "MMM d")}
-                </span>
+                </time>
               </div>
             </Link>
           ))}
@@ -178,3 +349,4 @@ export function RecentNotes({
     </section>
   );
 }
+

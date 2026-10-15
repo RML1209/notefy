@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useTransition } from "react";
@@ -5,6 +6,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -15,43 +17,38 @@ import {
 import { forgotPassword } from "@/actions/auth/forgot-password";
 
 import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
+
 import { Spinner } from "@/components/ui/spinner";
+
 import { FormError } from "@/components/ui/form-error";
+
 import { FormSuccess } from "@/components/ui/form-success";
 
 export function ForgotPasswordForm() {
   const router = useRouter();
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
 
-  const [success, setSuccess] =
-    useState("");
+  const [success, setSuccess] = useState("");
 
-  const form =
-    useForm<ForgotPasswordInput>({
-      resolver: zodResolver(
-        ForgotPasswordSchema
-      ),
+  const form = useForm<ForgotPasswordInput>({
+    resolver: zodResolver(ForgotPasswordSchema),
 
-      defaultValues: {
-        email: "",
-      },
-    });
+    defaultValues: {
+      email: "",
+    },
+  });
 
-  function onSubmit(
-    values: ForgotPasswordInput
-  ) {
+  function onSubmit(values: ForgotPasswordInput) {
     setError("");
     setSuccess("");
 
     startTransition(async () => {
-      const result =
-        await forgotPassword(values);
+      const result = await forgotPassword(values);
 
       if (result.error) {
         setError(result.error);
@@ -72,9 +69,7 @@ export function ForgotPasswordForm() {
 
   return (
     <form
-      onSubmit={form.handleSubmit(
-        onSubmit
-      )}
+      onSubmit={form.handleSubmit(onSubmit)}
       className="space-y-5"
     >
       <Input
@@ -82,20 +77,13 @@ export function ForgotPasswordForm() {
         type="email"
         placeholder="Enter your email"
         disabled={isPending}
-        error={
-          form.formState.errors.email
-            ?.message
-        }
+        error={form.formState.errors.email?.message}
         {...form.register("email")}
       />
 
-      <FormError
-        message={error}
-      />
+      <FormError message={error} />
 
-      <FormSuccess
-        message={success}
-      />
+      <FormSuccess message={success} />
 
       <Button
         type="submit"
@@ -105,7 +93,7 @@ export function ForgotPasswordForm() {
         {isPending ? (
           <>
             <Spinner
-              size={18}
+              size="sm"
               className="mr-2"
             />
             Sending Code...

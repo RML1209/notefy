@@ -2,21 +2,16 @@
 
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import type { ThemeProviderProps } from "next-themes";
 
-interface ThemeProviderProps {
-  children: React.ReactNode;
-}
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  const scriptProps =
+    typeof window === "undefined"
+      ? undefined
+      : ({ type: "application/json" } as const);
 
-export function ThemeProvider({
-  children,
-}: ThemeProviderProps) {
   return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="light"
-      enableSystem={false}
-      disableTransitionOnChange
-    >
+    <NextThemesProvider {...props} scriptProps={scriptProps}>
       {children}
     </NextThemesProvider>
   );

@@ -2,9 +2,10 @@
 
 import { useState, useTransition } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -15,49 +16,38 @@ import {
 import { verifyTwoFactor } from "@/actions/auth/verify-2fa";
 
 import { Button } from "@/components/ui/button";
-import { OtpInput } from "@/components/ui/otp-input";
+
+import { OTPInput } from "@/components/ui/otp-input";
+
 import { Spinner } from "@/components/ui/spinner";
+
 import { FormError } from "@/components/ui/form-error";
+
 import { FormSuccess } from "@/components/ui/form-success";
 
 export function VerifyTwoFactorForm() {
   const router = useRouter();
 
-  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
-  const email =
-    searchParams.get("email") ?? "";
+  const [error, setError] = useState("");
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [success, setSuccess] = useState("");
 
-  const [error, setError] =
-    useState("");
+  const form = useForm<VerifyTwoFactorInput>({
+    resolver: zodResolver(VerifyTwoFactorSchema),
 
-  const [success, setSuccess] =
-    useState("");
+    defaultValues: {
+      token: "",
+    },
+  });
 
-  const form =
-    useForm<VerifyTwoFactorInput>({
-      resolver: zodResolver(
-        VerifyTwoFactorSchema
-      ),
-
-      defaultValues: {
-        email,
-        token: "",
-      },
-    });
-
-  function onSubmit(
-    values: VerifyTwoFactorInput
-  ) {
+  function onSubmit(values: VerifyTwoFactorInput) {
     setError("");
     setSuccess("");
 
     startTransition(async () => {
-      const result =
-        await verifyTwoFactor(values);
+      const result = await verifyTwoFactor(values);
 
       if (result.error) {
         setError(result.error);
@@ -74,35 +64,32 @@ export function VerifyTwoFactorForm() {
 
   return (
     <form
-      onSubmit={form.handleSubmit(
-        onSubmit
-      )}
+      onSubmit={form.handleSubmit(onSubmit)}
       className="space-y-5"
     >
-      <input
-        type="hidden"
-        {...form.register("email")}
+      {/* Authentication Code */}
+      <Controller
+        name="token"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <OTPInput
+            label="Authentication Code"
+            length={6}
+            value={field.value}
+            onChange={field.onChange}
+            disabled={isPending}
+            error={fieldState.error?.message}
+          />
+        )}
       />
 
-      <OtpInput
-        label="Authentication Code"
-        length={6}
-        disabled={isPending}
-        error={
-          form.formState.errors.token
-            ?.message
-        }
-        {...form.register("token")}
-      />
+      {/* Server Error */}
+      <FormError message={error} />
 
-      <FormError
-        message={error}
-      />
+      {/* Success Message */}
+      <FormSuccess message={success} />
 
-      <FormSuccess
-        message={success}
-      />
-
+      {/* Verify Button */}
       <Button
         type="submit"
         className="w-full"
@@ -111,7 +98,7 @@ export function VerifyTwoFactorForm() {
         {isPending ? (
           <>
             <Spinner
-              size={18}
+              size="sm"
               className="mr-2"
             />
             Verifying...
@@ -121,13 +108,12 @@ export function VerifyTwoFactorForm() {
         )}
       </Button>
 
+      {/* Back to Login */}
       <Button
         type="button"
         variant="ghost"
         className="w-full"
-        onClick={() =>
-          router.push("/login")
-        }
+        onClick={() => router.push("/login")}
         disabled={isPending}
       >
         Back to Login

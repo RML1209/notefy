@@ -132,7 +132,8 @@ export function MobileSidebar({
             inset-y-0
             left-0
             z-50
-            w-72
+            w-82
+            h-full
             bg-white
             shadow-xl
             transition-transform
@@ -140,67 +141,63 @@ export function MobileSidebar({
             dark:bg-[#111A1F]
             lg:hidden
           `,
-          open
-            ? "translate-x-0"
-            : "-translate-x-full"
+          open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* ==================================================
             HEADER
             ================================================== */}
-
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-            border-b
-            border-slate-200
-            p-5
-            dark:border-slate-800
-          "
-        >
-          <Logo />
-
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            aria-label="Close navigation menu"
+        <div className="bg-white dark:bg-[#111A1F]">
+          <div
             className="
+          flex
+          justify-between
+          p-5
+          ml-auto
+          mr-auto
+          "
+          >
+            <Logo />
+
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close navigation menu"
+              className="
               rounded-lg
               p-2
               transition
               hover:bg-slate-100
               dark:hover:bg-slate-800
             "
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
 
-        {/* ==================================================
+          {/* ==================================================
             USER PROFILE
             ================================================== */}
 
-        <div
-          className="
+          <div
+            className="
             border-b
             border-slate-200
             px-5
             py-4
             dark:border-slate-800
           "
-        >
-          <div className="flex items-center gap-3">
-            {/* Profile Avatar */}
+          >
+            <div className="flex items-center gap-3">
+              {/* Profile Avatar */}
 
-            {profileImage ? (
-              <Image
-                src={profileImage}
-                alt={`${displayName}'s profile picture`}
-                width={44}
-                height={44}
-                className="
+              {profileImage ? (
+                <Image
+                  src={profileImage}
+                  alt={`${displayName}'s profile picture`}
+                  width={44}
+                  height={44}
+                  className="
                   h-11
                   w-11
                   shrink-0
@@ -211,10 +208,10 @@ export function MobileSidebar({
                   shadow-sm
                   dark:border-slate-700
                 "
-              />
-            ) : (
-              <div
-                className="
+                />
+              ) : (
+                <div
+                  className="
                   flex
                   h-11
                   w-11
@@ -228,59 +225,56 @@ export function MobileSidebar({
                   text-white
                   shadow-sm
                 "
-              >
-                {avatarLetter}
-              </div>
-            )}
+                >
+                  {avatarLetter}
+                </div>
+              )}
 
-            {/* User Information */}
+              {/* User Information */}
 
-            <div className="min-w-0 flex-1">
-              <p
-                className="
+              <div className="min-w-0 flex-1">
+                <p
+                  className="
                   truncate
                   font-semibold
                   text-slate-900
                   dark:text-white
                 "
-              >
-                {displayName}
-              </p>
+                >
+                  {displayName}
+                </p>
 
-              <p
-                className="
+                <p
+                  className="
                   truncate
                   text-sm
                   text-slate-500
                   dark:text-slate-400
                 "
-              >
-                {user.email ?? ""}
-              </p>
+                >
+                  {user.email ?? ""}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* ==================================================
+          {/* ==================================================
             NAVIGATION
             ================================================== */}
 
-        <nav className="flex flex-col gap-2 p-4">
-          {navigation.map((item) => {
-            const Icon = item.icon;
+          <nav className="flex flex-col gap-2 p-4">
+            {navigation.map((item) => {
+              const Icon = item.icon;
 
-            const active =
-              pathname === item.href;
+              const active = pathname === item.href;
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() =>
-                  setOpen(false)
-                }
-                className={cn(
-                  `
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    `
                     flex
                     items-center
                     gap-3
@@ -292,27 +286,28 @@ export function MobileSidebar({
                     transition-all
                     duration-200
                   `,
-                  active
-                    ? `
+                    active
+                      ? `
                         bg-[#6A89A7]
                         text-white
                         shadow-sm
                       `
-                    : `
+                      : `
                         text-slate-700
                         hover:bg-slate-100
                         dark:text-slate-300
                         dark:hover:bg-slate-800
-                      `
-                )}
-              >
-                <Icon className="h-5 w-5" />
+                      `,
+                  )}
+                >
+                  <Icon className="h-5 w-5" />
 
-                <span>{item.title}</span>
-              </Link>
-            );
-          })}
-        </nav>
+                  <span>{item.title}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
       </aside>
     </>
   );

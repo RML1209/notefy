@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         },
         {
           status: 401,
-        }
+        },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -48,23 +48,17 @@ export async function POST(request: Request) {
     // Validate file type
     // --------------------------------------------------
 
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/gif",
-    ];
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
         {
           success: false,
-          message:
-            "Only JPG, PNG, WEBP, and GIF images are allowed.",
+          message: "Only JPG, PNG, WEBP, and GIF images are allowed.",
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -82,7 +76,7 @@ export async function POST(request: Request) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -102,30 +96,24 @@ export async function POST(request: Request) {
       secure_url: string;
       public_id: string;
     }>((resolve, reject) => {
-      const uploadStream =
-        cloudinary.uploader.upload_stream(
-          {
-            folder: "notefy/profile-images",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (error || !result) {
-              reject(
-                error ??
-                  new Error(
-                    "Cloudinary upload failed."
-                  )
-              );
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "notefy/profile-images",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error || !result) {
+            reject(error ?? new Error("Cloudinary upload failed."));
 
-              return;
-            }
-
-            resolve({
-              secure_url: result.secure_url,
-              public_id: result.public_id,
-            });
+            return;
           }
-        );
+
+          resolve({
+            secure_url: result.secure_url,
+            public_id: result.public_id,
+          });
+        },
+      );
 
       uploadStream.end(buffer);
     });
@@ -160,10 +148,7 @@ export async function POST(request: Request) {
       user: updatedUser,
     });
   } catch (error) {
-    console.error(
-      "Profile image upload error:",
-      error
-    );
+    console.error("Profile image upload error:", error);
 
     return NextResponse.json(
       {
@@ -175,7 +160,7 @@ export async function POST(request: Request) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

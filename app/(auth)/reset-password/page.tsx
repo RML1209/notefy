@@ -1,5 +1,6 @@
-import { AuthCard } from "@/components/auth/auth-card";
+import { Suspense } from "react";
 
+import { AuthCard } from "@/components/auth/auth-card";
 import { ResetPasswordForm } from "@/components/forms/reset-password-form";
 
 export default function ResetPasswordPage() {
@@ -11,7 +12,9 @@ export default function ResetPasswordPage() {
       footerLinkText="Back to Sign In"
       footerHref="/login"
     >
-      <ResetPasswordForm />
+      <Suspense fallback={<p>Loading reset password form...</p>}>
+        <ResetPasswordForm />
+      </Suspense>
     </AuthCard>
   );
 }

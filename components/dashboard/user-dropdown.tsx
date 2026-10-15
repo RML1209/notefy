@@ -5,12 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 
-import {
-  ChevronDown,
-  LogOut,
-  Settings,
-  User,
-} from "lucide-react";
+import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 
 interface UserDropdownProps {
   user: {
@@ -21,90 +16,30 @@ interface UserDropdownProps {
   };
 }
 
-export function UserDropdown({
-  user,
-}: UserDropdownProps) {
-  const [open, setOpen] = useState(false);
+type AvatarProps = {
+  displayName: string;
+  profileImage: string | null;
+  size?: "small" | "medium" | "large";
+};
 
-  const dropdownRef =
-    useRef<HTMLDivElement>(null);
+// Avatar is now declared outside UserDropdown.
+function Avatar({ displayName, profileImage, size = "medium" }: AvatarProps) {
+  const sizeClasses = {
+    small: "h-8 w-8",
+    medium: "h-10 w-10",
+    large: "h-12 w-12",
+  };
 
-  // --------------------------------------------------
-  // Close dropdown when clicking outside
-  // --------------------------------------------------
+  const imageSize = {
+    small: 32,
+    medium: 40,
+    large: 48,
+  };
 
-  useEffect(() => {
-    function handleClickOutside(
-      event: MouseEvent
-    ) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(
-          event.target as Node
-        )
-      ) {
-        setOpen(false);
-      }
-    }
+  const avatarLetter = displayName.charAt(0).toUpperCase();
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
-
-    return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
-    };
-  }, []);
-
-  // --------------------------------------------------
-  // Logout
-  // --------------------------------------------------
-
-  async function handleLogout() {
-    await signOut({
-      callbackUrl: "/login",
-    });
-  }
-
-  // --------------------------------------------------
-  // User display values
-  // --------------------------------------------------
-
-  const displayName =
-    user.name?.trim() || "User";
-
-  const avatarLetter =
-    displayName.charAt(0).toUpperCase();
-
-  const profileImage =
-    user.image?.trim() || null;
-
-  // --------------------------------------------------
-  // Avatar component
-  // --------------------------------------------------
-
-  function Avatar({
-    size = "medium",
-  }: {
-    size?: "small" | "medium" | "large";
-  }) {
-    const sizeClasses = {
-      small: "h-8 w-8",
-      medium: "h-10 w-10",
-      large: "h-12 w-12",
-    };
-
-    const imageSize = {
-      small: 32,
-      medium: 40,
-      large: 48,
-    };
-
-    return profileImage ? (
+  if (profileImage) {
+    return (
       <Image
         src={profileImage}
         alt={`${displayName}'s profile picture`}
@@ -120,38 +55,66 @@ export function UserDropdown({
           dark:border-slate-700
         `}
       />
-    ) : (
-      <div
-        className={`
-          ${sizeClasses[size]}
-          flex
-          shrink-0
-          items-center
-          justify-center
-          rounded-full
-          bg-[#6A89A7]
-          font-semibold
-          text-white
-        `}
-      >
-        {avatarLetter}
-      </div>
     );
   }
 
-  // --------------------------------------------------
-  // UI
-  // --------------------------------------------------
-
   return (
     <div
-      ref={dropdownRef}
-      className="relative"
+      className={`
+        ${sizeClasses[size]}
+        flex
+        shrink-0
+        items-center
+        justify-center
+        rounded-full
+        bg-[#6A89A7]
+        font-semibold
+        text-white
+      `}
+      aria-label={`${displayName}'s avatar`}
     >
-      {/* ==================================================
-          DROPDOWN TRIGGER
-          ================================================== */}
+      {avatarLetter}
+    </div>
+  );
+}
 
+export function UserDropdown({ user }: UserDropdownProps) {
+  const [open, setOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside.
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Logout.
+  async function handleLogout() {
+    await signOut({
+      callbackUrl: "/login",
+    });
+  }
+
+  // User display values.
+  const displayName = user.name?.trim() || "User";
+  const profileImage = user.image?.trim() || null;
+
+  return (
+    <div ref={dropdownRef} className="relative">
+      {/* Dropdown trigger */}
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -171,16 +134,17 @@ export function UserDropdown({
           dark:hover:bg-slate-800
         "
       >
-        {/* Avatar */}
-
-        <Avatar size="medium" />
+        <Avatar
+          displayName={displayName}
+          profileImage={profileImage}
+          size="medium"
+        />
 
         {/* User information */}
-
         <div className="hidden text-left lg:block">
           <p
             className="
-              max-w-[180px]
+              max-w-45
               truncate
               text-sm
               font-semibold
@@ -193,7 +157,7 @@ export function UserDropdown({
 
           <p
             className="
-              max-w-[180px]
+              max-w-45
               truncate
               text-xs
               text-slate-500
@@ -205,7 +169,6 @@ export function UserDropdown({
         </div>
 
         {/* Arrow */}
-
         <ChevronDown
           className={`
             h-4
@@ -213,19 +176,12 @@ export function UserDropdown({
             text-slate-500
             transition-transform
             dark:text-slate-400
-            ${
-              open
-                ? "rotate-180"
-                : ""
-            }
+            ${open ? "rotate-180" : ""}
           `}
         />
       </button>
 
-      {/* ==================================================
-          DROPDOWN MENU
-          ================================================== */}
-
+      {/* Dropdown menu */}
       {open && (
         <div
           className="
@@ -245,10 +201,7 @@ export function UserDropdown({
           "
           role="menu"
         >
-          {/* ==================================================
-              USER INFORMATION
-              ================================================== */}
-
+          {/* User information */}
           <div
             className="
               border-b
@@ -258,11 +211,11 @@ export function UserDropdown({
             "
           >
             <div className="flex items-center gap-3">
-              {/* Larger avatar */}
-
-              <Avatar size="large" />
-
-              {/* Name + email */}
+              <Avatar
+                displayName={displayName}
+                profileImage={profileImage}
+                size="large"
+              />
 
               <div className="min-w-0 flex-1">
                 <p
@@ -290,13 +243,8 @@ export function UserDropdown({
             </div>
           </div>
 
-          {/* ==================================================
-              MENU ITEMS
-              ================================================== */}
-
+          {/* Menu items */}
           <div className="p-2">
-            {/* Profile */}
-
             <Link
               href="/profile"
               onClick={() => setOpen(false)}
@@ -317,11 +265,8 @@ export function UserDropdown({
               "
             >
               <User className="h-5 w-5" />
-
               <span>Profile</span>
             </Link>
-
-            {/* Settings */}
 
             <Link
               href="/settings"
@@ -343,11 +288,8 @@ export function UserDropdown({
               "
             >
               <Settings className="h-5 w-5" />
-
               <span>Settings</span>
             </Link>
-
-            {/* Logout */}
 
             <button
               type="button"
@@ -370,7 +312,6 @@ export function UserDropdown({
               "
             >
               <LogOut className="h-5 w-5" />
-
               <span>Logout</span>
             </button>
           </div>

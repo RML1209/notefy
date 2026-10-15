@@ -2,6 +2,16 @@
 
 import { Logo } from "@/components/ui/logo";
 
+
+import { Inconsolata } from "next/font/google";
+
+
+const inconsolata = Inconsolata({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
 export function AuthBackground() {
   return (
     <div
@@ -14,7 +24,7 @@ export function AuthBackground() {
         flex-col
         justify-between
         overflow-hidden
-        bg-[#0B1215]
+        bg-[#1a3541]
         text-[#F8F8FF]
         px-6
         sm:px-8
@@ -48,8 +58,8 @@ export function AuthBackground() {
           -right-48
           h-80
           w-80
-          lg:h-[28rem]
-          lg:w-[28rem]
+          lg:h-112
+          lg:w-md
           rounded-full
           bg-[#6A89A7]/10
           blur-3xl
@@ -57,9 +67,13 @@ export function AuthBackground() {
       />
 
       {/* Logo */}
-      <div className="relative z-10">
+      <div>
+        
         <Logo />
-      </div>
+
+        </div>
+       
+      
 
       {/* Center Content */}
       <div
@@ -79,7 +93,6 @@ export function AuthBackground() {
             font-bold
             leading-tight
             tracking-tight
-
             text-3xl
             sm:text-4xl
             lg:text-4xl
@@ -88,7 +101,7 @@ export function AuthBackground() {
         >
           Organize your ideas.
           <br />
-          Remember everything.
+         <span  className={`${inconsolata.className} text-[#6A89A7] font-weight: 700`} >Remember</span>  <span className="bg-green-500 p-1.8 border border-green-600">everything.</span>
         </h1>
 
         <p

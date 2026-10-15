@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -10,7 +11,10 @@ import {
   X,
 } from "lucide-react";
 
-import { cva, type VariantProps } from "class-variance-authority";
+import {
+  cva,
+  type VariantProps,
+} from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
@@ -70,14 +74,18 @@ const Alert = React.forwardRef<
     },
     ref
   ) => {
-    const Icon = icons[variant];
+    const alertVariant = variant ?? "info";
+
+    const Icon = icons[alertVariant];
 
     return (
       <div
         ref={ref}
         role="alert"
         className={cn(
-          alertVariants({ variant }),
+          alertVariants({
+            variant: alertVariant,
+          }),
           className
         )}
         {...props}

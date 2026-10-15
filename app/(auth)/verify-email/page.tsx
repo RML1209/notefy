@@ -1,5 +1,6 @@
-import { AuthCard } from "@/components/auth/auth-card";
+import { Suspense } from "react";
 
+import { AuthCard } from "@/components/auth/auth-card";
 import { VerifyEmailForm } from "@/components/forms/verify-email-form";
 
 export default function VerifyEmailPage() {
@@ -11,7 +12,9 @@ export default function VerifyEmailPage() {
       footerLinkText="Back to Sign In"
       footerHref="/login"
     >
-      <VerifyEmailForm />
+      <Suspense fallback={<p>Loading verification form...</p>}>
+        <VerifyEmailForm />
+      </Suspense>
     </AuthCard>
   );
 }

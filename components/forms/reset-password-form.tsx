@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-
+import { useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -23,44 +22,42 @@ import { FormSuccess } from "@/components/ui/form-success";
 
 export function ResetPasswordForm() {
   const router = useRouter();
-
   const searchParams = useSearchParams();
 
-  const email =
-    searchParams.get("email") ?? "";
+  const email = searchParams.get("email") ?? "";
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [error, setError] =
-    useState("");
+  const form = useForm<ResetPasswordInput>({
+    resolver: zodResolver(ResetPasswordSchema),
+    defaultValues: {
+      email,
+      token: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  const [success, setSuccess] =
-    useState("");
-
-  const form =
-    useForm<ResetPasswordInput>({
-      resolver: zodResolver(
-        ResetPasswordSchema
-      ),
-
-      defaultValues: {
-        email,
-        token: "",
-        password: "",
-        confirmPassword: "",
-      },
+  // Keep the email field synchronized with the URL.
+  useEffect(() => {
+    form.setValue("email", email, {
+      shouldValidate: false,
     });
+  }, [email, form]);
 
-  function onSubmit(
-    values: ResetPasswordInput
-  ) {
+  const token = useWatch({
+    control: form.control,
+    name: "token",
+  });
+
+  function onSubmit(values: ResetPasswordInput) {
     setError("");
     setSuccess("");
 
     startTransition(async () => {
-      const result =
-        await resetPassword(values);
+      const result = await resetPassword(values);
 
       if (result.error) {
         setError(result.error);
@@ -78,38 +75,28 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <form
-      onSubmit={form.handleSubmit(
-        onSubmit
-      )}
-      className="space-y-5"
-    >
-      <input
-        type="hidden"
-        {...form.register("email")}
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <input type="hidden" {...form.register("email")} />
+
+      <OTPInput
+        label="Reset Code"
+        value={token ?? ""}
+        onChange={(value) =>
+          form.setValue("token", value, {
+            shouldValidate: true,
+            shouldDirty: true,
+          })
+        }
+        length={6}
+        disabled={isPending}
+        error={form.formState.errors.token?.message}
       />
 
-     <OTPInput
-  label="Reset Code"
-  value={form.watch("token") ?? ""}
-  onChange={(value) =>
-    form.setValue("token", value, {
-      shouldValidate: true,
-      shouldDirty: true,
-    })
-  }
-  length={6}
-  disabled={isPending}
-  error={form.formState.errors.token?.message}
-/>
       <PasswordInput
         label="New Password"
         placeholder="Enter your new password"
         disabled={isPending}
-        error={
-          form.formState.errors.password
-            ?.message
-        }
+        error={form.formState.errors.password?.message}
         {...form.register("password")}
       />
 
@@ -117,34 +104,17 @@ export function ResetPasswordForm() {
         label="Confirm Password"
         placeholder="Confirm your new password"
         disabled={isPending}
-        error={
-          form.formState.errors
-            .confirmPassword?.message
-        }
-        {...form.register(
-          "confirmPassword"
-        )}
+        error={form.formState.errors.confirmPassword?.message}
+        {...form.register("confirmPassword")}
       />
 
-      <FormError
-        message={error}
-      />
+      <FormError message={error} />
+      <FormSuccess message={success} />
 
-      <FormSuccess
-        message={success}
-      />
-
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={isPending}
-      >
+      <Button type="submit" className="w-full" disabled={isPending}>
         {isPending ? (
           <>
-            <Spinner
-              size={18}
-              className="mr-2"
-            />
+            <Spinner size="sm" className="mr-2" />
             Resetting Password...
           </>
         ) : (

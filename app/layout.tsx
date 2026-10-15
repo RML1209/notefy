@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
-
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
 const geistSans = Geist({
@@ -18,8 +17,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Notefy",
   description: "A simple note-taking app",
-    icons: {
-    icon: "/notefy-logo.png",
+  icons: {
+    icon: "/notefy-icon.png",
   },
 };
 
@@ -35,7 +34,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <body>
-        <ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
           {children}
         </ThemeProvider>
       </body>

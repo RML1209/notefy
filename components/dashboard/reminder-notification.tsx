@@ -129,7 +129,7 @@ export function ReminderNotification({
               sm:left-auto
               sm:right-0
               sm:top-12
-              sm:w-[380px]
+              sm:w-95
             "
           >
             {/* Header */}
@@ -189,7 +189,7 @@ export function ReminderNotification({
             </div>
 
             {/* Content */}
-            <div className="max-h-[500px] overflow-y-auto">
+            <div className="max-h-125 overflow-y-auto">
               {/* Upcoming */}
               <div className="p-4">
                 <div className="mb-3 flex items-center justify-between">

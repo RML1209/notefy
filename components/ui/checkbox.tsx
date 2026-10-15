@@ -26,7 +26,6 @@ const Checkbox = React.forwardRef<
       label,
       description,
       error,
-      className,
       disabled,
       ...props
     },

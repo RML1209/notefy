@@ -1,11 +1,14 @@
+
 "use client";
 
 import { useState, useTransition } from "react";
 
 import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -16,24 +19,27 @@ import {
 import { login } from "@/actions/auth/login";
 
 import { Input } from "@/components/ui/input";
+
 import { PasswordInput } from "@/components/ui/password-input";
+
 import { Button } from "@/components/ui/button";
+
 import { Checkbox } from "@/components/ui/checkbox";
+
 import { Spinner } from "@/components/ui/spinner";
+
 import { FormError } from "@/components/ui/form-error";
+
 import { FormSuccess } from "@/components/ui/form-success";
 
 export function LoginForm() {
   const router = useRouter();
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
 
-  const [success, setSuccess] =
-    useState("");
+  const [success, setSuccess] = useState("");
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(LoginSchema),
@@ -112,8 +118,7 @@ export function LoginForm() {
         placeholder="Enter your password"
         disabled={isPending}
         error={
-          form.formState.errors.password
-            ?.message
+          form.formState.errors.password?.message
         }
         {...form.register("password")}
       />
@@ -149,7 +154,7 @@ export function LoginForm() {
         {isPending ? (
           <>
             <Spinner
-              size={18}
+              size="sm"
               className="mr-2"
             />
             Signing In...

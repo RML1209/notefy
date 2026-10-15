@@ -79,17 +79,15 @@ export function Sidebar({
     user.image?.trim() || null;
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col ">
       {/* ==================================================
           LOGO
           ================================================== */}
 
       <div
         className="
-          border-b
-          border-slate-200
-          p-6
-          dark:border-slate-800
+      p-5
+          ml-auto mr-auto
         "
       >
         <Logo />
@@ -186,8 +184,7 @@ export function Sidebar({
         {navigation.map((item) => {
           const Icon = item.icon;
 
-          const active =
-            pathname === item.href;
+          const active = pathname === item.href;
 
           return (
             <Link
@@ -217,7 +214,7 @@ export function Sidebar({
                       hover:bg-slate-100
                       dark:text-slate-300
                       dark:hover:bg-slate-800
-                    `
+                    `,
               )}
             >
               <Icon className="h-5 w-5" />
@@ -255,7 +252,6 @@ export function Sidebar({
           "
         >
           <LogOut className="mr-2 h-5 w-5" />
-
           Logout
         </Button>
       </div>

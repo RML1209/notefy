@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 export function NoteEmpty() {
   return (
-    <section className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-[#111A1F]">
+    <section className="flex min-h-105 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-[#111A1F]">
       {/* Icon */}
       <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#6A89A7]/10">
         <NotebookPen className="h-12 w-12 text-[#6A89A7]" />
@@ -40,7 +40,7 @@ export function NoteEmpty() {
         >
           <FilePlus2 className="h-5 w-5" />
 
-          Create Your First Note
+          Create Your Note Now
         </Button>
       </Link>
     </section>

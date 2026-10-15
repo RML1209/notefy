@@ -32,6 +32,8 @@ export type UserMinAggregateOutputType = {
   image: string | null
   emailVerified: Date | null
   isTwoFactorEnabled: boolean | null
+  reminderNotifications: boolean | null
+  emailNotifications: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +46,8 @@ export type UserMaxAggregateOutputType = {
   image: string | null
   emailVerified: Date | null
   isTwoFactorEnabled: boolean | null
+  reminderNotifications: boolean | null
+  emailNotifications: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +60,8 @@ export type UserCountAggregateOutputType = {
   image: number
   emailVerified: number
   isTwoFactorEnabled: number
+  reminderNotifications: number
+  emailNotifications: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,6 +76,8 @@ export type UserMinAggregateInputType = {
   image?: true
   emailVerified?: true
   isTwoFactorEnabled?: true
+  reminderNotifications?: true
+  emailNotifications?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +90,8 @@ export type UserMaxAggregateInputType = {
   image?: true
   emailVerified?: true
   isTwoFactorEnabled?: true
+  reminderNotifications?: true
+  emailNotifications?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +104,8 @@ export type UserCountAggregateInputType = {
   image?: true
   emailVerified?: true
   isTwoFactorEnabled?: true
+  reminderNotifications?: true
+  emailNotifications?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -179,6 +191,8 @@ export type UserGroupByOutputType = {
   image: string | null
   emailVerified: Date | null
   isTwoFactorEnabled: boolean
+  reminderNotifications: boolean
+  emailNotifications: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -212,6 +226,8 @@ export type UserWhereInput = {
   image?: Prisma.StringNullableFilter<"User"> | string | null
   emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean
+  reminderNotifications?: Prisma.BoolFilter<"User"> | boolean
+  emailNotifications?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   notes?: Prisma.NoteListRelationFilter
@@ -230,6 +246,8 @@ export type UserOrderByWithRelationInput = {
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder
   isTwoFactorEnabled?: Prisma.SortOrder
+  reminderNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   notes?: Prisma.NoteOrderByRelationAggregateInput
@@ -251,6 +269,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   image?: Prisma.StringNullableFilter<"User"> | string | null
   emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean
+  reminderNotifications?: Prisma.BoolFilter<"User"> | boolean
+  emailNotifications?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   notes?: Prisma.NoteListRelationFilter
@@ -269,6 +289,8 @@ export type UserOrderByWithAggregationInput = {
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder
   isTwoFactorEnabled?: Prisma.SortOrder
+  reminderNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -287,6 +309,8 @@ export type UserScalarWhereWithAggregatesInput = {
   image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   emailVerified?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  reminderNotifications?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  emailNotifications?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -299,6 +323,8 @@ export type UserCreateInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
@@ -317,6 +343,8 @@ export type UserUncheckedCreateInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
@@ -335,6 +363,8 @@ export type UserUpdateInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
@@ -353,6 +383,8 @@ export type UserUncheckedUpdateInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
@@ -371,6 +403,8 @@ export type UserCreateManyInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -383,6 +417,8 @@ export type UserUpdateManyMutationInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -395,6 +431,8 @@ export type UserUncheckedUpdateManyInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -407,6 +445,8 @@ export type UserCountOrderByAggregateInput = {
   image?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   isTwoFactorEnabled?: Prisma.SortOrder
+  reminderNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -419,6 +459,8 @@ export type UserMaxOrderByAggregateInput = {
   image?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   isTwoFactorEnabled?: Prisma.SortOrder
+  reminderNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -431,6 +473,8 @@ export type UserMinOrderByAggregateInput = {
   image?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   isTwoFactorEnabled?: Prisma.SortOrder
+  reminderNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -552,6 +596,8 @@ export type UserCreateWithoutNotesInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -569,6 +615,8 @@ export type UserUncheckedCreateWithoutNotesInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -602,6 +650,8 @@ export type UserUpdateWithoutNotesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -619,6 +669,8 @@ export type UserUncheckedUpdateWithoutNotesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -636,6 +688,8 @@ export type UserCreateWithoutAccountsInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
@@ -653,6 +707,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
@@ -686,6 +742,8 @@ export type UserUpdateWithoutAccountsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
@@ -703,6 +761,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
@@ -720,6 +780,8 @@ export type UserCreateWithoutSessionsInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
@@ -737,6 +799,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
@@ -770,6 +834,8 @@ export type UserUpdateWithoutSessionsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
@@ -787,6 +853,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
@@ -804,6 +872,8 @@ export type UserCreateWithoutVerificationTokensInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
@@ -821,6 +891,8 @@ export type UserUncheckedCreateWithoutVerificationTokensInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
@@ -854,6 +926,8 @@ export type UserUpdateWithoutVerificationTokensInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
@@ -871,6 +945,8 @@ export type UserUncheckedUpdateWithoutVerificationTokensInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
@@ -888,6 +964,8 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
@@ -905,6 +983,8 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
@@ -938,6 +1018,8 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
@@ -955,6 +1037,8 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
@@ -972,6 +1056,8 @@ export type UserCreateWithoutTwoFactorTokensInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
@@ -989,6 +1075,8 @@ export type UserUncheckedCreateWithoutTwoFactorTokensInput = {
   image?: string | null
   emailVerified?: Date | string | null
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
@@ -1022,6 +1110,8 @@ export type UserUpdateWithoutTwoFactorTokensInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
@@ -1039,6 +1129,8 @@ export type UserUncheckedUpdateWithoutTwoFactorTokensInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminderNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
@@ -1132,6 +1224,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   image?: boolean
   emailVerified?: boolean
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   notes?: boolean | Prisma.User$notesArgs<ExtArgs>
@@ -1151,6 +1245,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   image?: boolean
   emailVerified?: boolean
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1163,6 +1259,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   image?: boolean
   emailVerified?: boolean
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1175,11 +1273,13 @@ export type UserSelectScalar = {
   image?: boolean
   emailVerified?: boolean
   isTwoFactorEnabled?: boolean
+  reminderNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "image" | "emailVerified" | "isTwoFactorEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "image" | "emailVerified" | "isTwoFactorEnabled" | "reminderNotifications" | "emailNotifications" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   notes?: boolean | Prisma.User$notesArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -1210,6 +1310,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     image: string | null
     emailVerified: Date | null
     isTwoFactorEnabled: boolean
+    reminderNotifications: boolean
+    emailNotifications: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1648,6 +1750,8 @@ export interface UserFieldRefs {
   readonly image: Prisma.FieldRef<"User", 'String'>
   readonly emailVerified: Prisma.FieldRef<"User", 'DateTime'>
   readonly isTwoFactorEnabled: Prisma.FieldRef<"User", 'Boolean'>
+  readonly reminderNotifications: Prisma.FieldRef<"User", 'Boolean'>
+  readonly emailNotifications: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
