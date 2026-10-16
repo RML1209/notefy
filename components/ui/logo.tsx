@@ -20,16 +20,17 @@ export function Logo({
   size = 100,
 }: LogoProps) {
   return (
-      <Image
-        src="/notefy-logo.png"
-        alt="Notefy Logo"
-        width={size}
-        height={size}
-        priority
-        unoptimized
-
-        className="rounded-xl h-auto w-32 object-contain"
-      />
+      <div className="flex justify-center">
+               <Image
+                 src="https://files.catbox.moe/txzbgn.png"
+                 alt="Notefy logo"
+                 width={size}
+                 height={size}
+                 priority
+                 unoptimized
+                 className="object-contain"
+               />
+             </div>
 
   );
 }

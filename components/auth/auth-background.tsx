@@ -1,7 +1,6 @@
 "use client";
 
-import { Logo } from "@/components/ui/logo";
-
+import Image from "next/image";
 
 import { Inconsolata } from "next/font/google";
 
@@ -67,13 +66,17 @@ export function AuthBackground() {
       />
 
       {/* Logo */}
-      <div>
-        
-        <Logo />
-
-        </div>
-       
-      
+      <div className="flex justify-left">
+        <Image
+          src="https://files.catbox.moe/mapft8.png"
+          alt="Notefy logo"
+          width={36}
+          height={36}
+          priority
+          unoptimized
+          className="object-contain rou bg-blue-300"
+        />
+      </div>
 
       {/* Center Content */}
       <div
@@ -101,7 +104,14 @@ export function AuthBackground() {
         >
           Organize your ideas.
           <br />
-         <span  className={`${inconsolata.className} text-[#6A89A7] font-weight: 700`} >Remember</span>  <span className="bg-green-500 p-1.8 border border-green-600">everything.</span>
+          <span
+            className={`${inconsolata.className} text-[#6A89A7] font-weight: 700`}
+          >
+            Remember
+          </span>{" "}
+          <span className="bg-green-500 p-1.8 border border-green-600">
+            everything.
+          </span>
         </h1>
 
         <p

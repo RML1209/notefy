@@ -14,6 +14,8 @@ import {
   User,
 } from "lucide-react";
 
+import { signOut } from "next-auth/react";
+
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
@@ -77,6 +79,15 @@ export function Sidebar({
 
   const profileImage =
     user.image?.trim() || null;
+
+    
+      // Logout.
+      async function handleLogout() {
+        await signOut({
+          callbackUrl: "/login",
+        });
+      }
+    
 
   return (
     <div className="flex h-full flex-col ">
@@ -240,15 +251,16 @@ export function Sidebar({
         <Button
           type="button"
           variant="outline"
+          onClick={handleLogout}
           className="
             w-full
             justify-start
             border-slate-200
-            text-slate-700
-            hover:bg-slate-100
+            text-black
+            hover:bg-red-400
             dark:border-slate-700
             dark:text-slate-300
-            dark:hover:bg-slate-800
+            dark:hover:bg-red-500
           "
         >
           <LogOut className="mr-2 h-5 w-5" />

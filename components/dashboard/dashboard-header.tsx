@@ -58,7 +58,7 @@ export function DashboardHeader({
       {/* Header content */}
       <div className="min-w-0">
       <h2 className="text-3xl font-bold tracking-tight text-foreground">
-          {title ?? `${greeting} 👋`}
+          {title ?? `${greeting}`}
         </h2>
 
         {description && (

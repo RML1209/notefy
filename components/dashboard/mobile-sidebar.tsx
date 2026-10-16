@@ -134,6 +134,7 @@ export function MobileSidebar({
             z-50
             w-82
             h-full
+            rounded-r-2xl
             bg-white
             shadow-xl
             transition-transform
@@ -147,7 +148,8 @@ export function MobileSidebar({
         {/* ==================================================
             HEADER
             ================================================== */}
-        <div className="bg-white dark:bg-[#111A1F]">
+        <div className="bg-white
+           rounded-r-2xl dark:bg-[#111A1F] h-402">
           <div
             className="
           flex

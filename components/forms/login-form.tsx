@@ -125,7 +125,7 @@ export function LoginForm() {
 
       <div className="flex items-center justify-between">
         <Checkbox
-          label="Remember me"
+          label="Remember Me"
           disabled={isPending}
         />
 

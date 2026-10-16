@@ -1,18 +1,14 @@
 "use client";
 
 import * as React from "react";
-
-import { Card } from "@/components/ui/card";
-
+import { Logo } from "@/components/ui/logo";
 import { AuthHeader } from "@/components/auth/auth-header";
 import { AuthFooter } from "@/components/auth/auth-footer";
 
 interface AuthCardProps {
   title: string;
   description: string;
-
   children: React.ReactNode;
-
   footerText: string;
   footerLinkText: string;
   footerHref: string;
@@ -27,35 +23,30 @@ export function AuthCard({
   footerHref,
 }: AuthCardProps) {
   return (
-    <Card
+    <div
       className="
         w-full
         max-w-md
-        border-slate-200
-        bg-white/90
-        p-8
-        shadow-xl
-        backdrop-blur
-        dark:border-[#1E2A31]
-        dark:bg-[#111A1F]/90
+        p-6
       "
     >
       <div className="space-y-8">
-        <AuthHeader
-          title={title}
-          description={description}
-        />
+        {/* Website Logo */}
+    <Logo/>
 
-        <div className="space-y-6">
-          {children}
-        </div>
+        {/* Authentication Title and Description */}
+        <AuthHeader title={title} description={description} />
 
+        {/* Authentication Form */}
+        <div className="space-y-6">{children}</div>
+
+        {/* Authentication Footer */}
         <AuthFooter
           text={footerText}
           linkText={footerLinkText}
           href={footerHref}
         />
       </div>
-    </Card>
+    </div>
   );
 }
