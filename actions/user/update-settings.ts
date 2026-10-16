@@ -3,18 +3,18 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-interface UpdateSettingsInput {
+export interface UpdateSettingsInput {
   reminderNotifications?: boolean;
   emailNotifications?: boolean;
 }
 
-interface UpdateSettingsResult {
+export interface UpdateSettingsResult {
   success: boolean;
   message: string;
 }
 
 export async function updateSettings(
-  input: UpdateSettingsInput
+  input: UpdateSettingsInput,
 ): Promise<UpdateSettingsResult> {
   try {
     const session = await auth();
@@ -22,40 +22,50 @@ export async function updateSettings(
     if (!session?.user?.id) {
       return {
         success: false,
-        message: "You must be logged in.",
+        message: "You must be logged in to update settings.",
       };
     }
 
     const data: UpdateSettingsInput = {};
 
     if (input.reminderNotifications !== undefined) {
+      if (typeof input.reminderNotifications !== "boolean") {
+        return { success: false, message: "Invalid reminder preference." };
+      }
+
       data.reminderNotifications = input.reminderNotifications;
     }
 
     if (input.emailNotifications !== undefined) {
+      if (typeof input.emailNotifications !== "boolean") {
+        return { success: false, message: "Invalid email preference." };
+      }
+
       data.emailNotifications = input.emailNotifications;
     }
 
+    if (Object.keys(data).length === 0) {
+      return {
+        success: false,
+        message: "No settings were provided to update.",
+      };
+    }
+
     await prisma.user.update({
-      where: {
-        id: session.user.id,
-      },
+      where: { id: session.user.id },
       data,
     });
 
     return {
       success: true,
-      message: "Settings updated successfully.",
+      message: "Settings saved successfully.",
     };
   } catch (error) {
     console.error("Failed to update settings:", error);
 
     return {
       success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "Failed to update settings.",
+      message: "Could not save your settings. Please try again.",
     };
   }
 }
