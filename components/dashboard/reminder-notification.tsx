@@ -1,14 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import {
-  Bell,
-  CheckCircle2,
-  Clock,
-  X,
-} from "lucide-react";
+import { Bell, CheckCircle2, Clock, X } from "lucide-react";
 
 import { format } from "date-fns";
 
@@ -16,7 +12,7 @@ export interface ReminderNotification {
   id: string;
   title: string;
   content: string;
-  remindAt: Date | null;
+  remindAt: Date | string | null;
   isReminderSent: boolean;
   isPinned: boolean;
   isArchived: boolean;
@@ -26,23 +22,43 @@ interface ReminderNotificationProps {
   reminders: ReminderNotification[];
 }
 
-export function ReminderNotification({
-  reminders,
-}: ReminderNotificationProps) {
+export function ReminderNotification({ reminders }: ReminderNotificationProps) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
-  const upcomingReminders = reminders.filter(
-    (reminder) =>
-      reminder.remindAt &&
-      !reminder.isReminderSent &&
-      !reminder.isArchived
-  );
+  // Refresh server-rendered reminder data while the panel is open.
+  useEffect(() => {
+    if (!open) return;
 
-  const sentReminders = reminders.filter(
-    (reminder) =>
-      reminder.isReminderSent &&
-      !reminder.isArchived
-  );
+    const interval = window.setInterval(() => {
+      router.refresh();
+    }, 10_000);
+
+    return () => window.clearInterval(interval);
+  }, [open, router]);
+
+  // Sort by scheduled reminder time: newest to oldest.
+  const sortNewestFirst = (
+    a: ReminderNotification,
+    b: ReminderNotification,
+  ) => {
+    const dateA = a.remindAt ? new Date(a.remindAt).getTime() : 0;
+
+    const dateB = b.remindAt ? new Date(b.remindAt).getTime() : 0;
+
+    return dateB - dateA;
+  };
+
+  const upcomingReminders = reminders
+    .filter(
+      (reminder) =>
+        reminder.remindAt && !reminder.isReminderSent && !reminder.isArchived,
+    )
+    .sort(sortNewestFirst);
+
+  const sentReminders = reminders
+    .filter((reminder) => reminder.isReminderSent && !reminder.isArchived)
+    .sort(sortNewestFirst);
 
   const notificationCount = upcomingReminders.length;
 
@@ -86,9 +102,7 @@ export function ReminderNotification({
               text-white
             "
           >
-            {notificationCount > 9
-              ? "9+"
-              : notificationCount}
+            {notificationCount > 9 ? "9+" : notificationCount}
           </span>
         )}
       </button>
@@ -243,8 +257,8 @@ export function ReminderNotification({
                             {reminder.remindAt && (
                               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                 {format(
-                                  reminder.remindAt,
-                                  "MMM d, yyyy • h:mm a"
+                                  new Date(reminder.remindAt),
+                                  "MMM d, yyyy • h:mm a",
                                 )}
                               </p>
                             )}
@@ -305,8 +319,8 @@ export function ReminderNotification({
                             {reminder.remindAt && (
                               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                 {format(
-                                  reminder.remindAt,
-                                  "MMM d, yyyy • h:mm a"
+                                  new Date(reminder.remindAt),
+                                  "MMM d, yyyy • h:mm a",
                                 )}
                               </p>
                             )}

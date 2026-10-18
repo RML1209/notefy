@@ -16,7 +16,7 @@ export function ReminderBadge({
         />
       ) : (
         <div
-          className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#6A89A7] px-1 text-[10px] font-semibold text-white"
+          className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#6A89A7] px-1 text-[10px] font-semibold text-white"
           title={`${count} reminders`}
         >
           {count}

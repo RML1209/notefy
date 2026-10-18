@@ -23,16 +23,20 @@ export async function processReminders(): Promise<ProcessRemindersResult> {
   try {
     const now = new Date();
 
-    /*
-     * Find all reminders that are due
-     * and have not been sent yet.
-     */
+    // Find due reminders only for users who have enabled
+    // both reminder and email notifications.
     const reminders = await prisma.note.findMany({
       where: {
         remindAt: {
           lte: now,
         },
         isReminderSent: false,
+        user: {
+          is: {
+            reminderNotifications: true,
+            emailNotifications: true,
+          },
+        },
       },
       orderBy: {
         remindAt: "asc",
@@ -48,21 +52,14 @@ export async function processReminders(): Promise<ProcessRemindersResult> {
 
     result.processed = reminders.length;
 
-    /*
-     * Process each reminder individually.
-     */
+    // Process each eligible reminder individually.
     for (const note of reminders) {
       try {
-        /*
-         * Safety check.
-         */
         if (!note.remindAt) {
           continue;
         }
 
-        /*
-         * Get the owner of the note.
-         */
+        // Get the owner of the note.
         const user = await prisma.user.findUnique({
           where: {
             id: note.userId,
@@ -74,35 +71,25 @@ export async function processReminders(): Promise<ProcessRemindersResult> {
           },
         });
 
-        /*
-         * User no longer exists.
-         */
         if (!user) {
           result.failed++;
 
-          result.errors.push(
-            `User for note "${note.id}" was not found.`
-          );
+          result.errors.push(`User for note "${note.id}" was not found.`);
 
           continue;
         }
 
-        /*
-         * Make sure the user has an email address.
-         */
         if (!user.email) {
           result.failed++;
 
           result.errors.push(
-            `User for note "${note.id}" has no email address.`
+            `User for note "${note.id}" has no email address.`,
           );
 
           continue;
         }
 
-        /*
-         * Send the reminder email.
-         */
+        // Send the reminder email.
         const emailResult = await sendReminderEmail({
           to: user.email,
           userName: user.name ?? "Notefy User",
@@ -112,31 +99,21 @@ export async function processReminders(): Promise<ProcessRemindersResult> {
           remindAt: note.remindAt,
         });
 
-        /*
-         * Email failed.
-         *
-         * Keep isReminderSent = false
-         * so the next cron execution can retry.
-         */
+        // Keep the reminder eligible for retry if sending fails.
         if (!emailResult.success) {
           result.failed++;
 
           result.errors.push(
             `Failed to send reminder for note "${note.id}": ${
-              emailResult.error ??
-              "Unknown email error."
-            }`
+              emailResult.error ?? "Unknown email error."
+            }`,
           );
 
           continue;
         }
 
-        /*
-         * Email was successfully sent.
-         *
-         * Mark the reminder as sent so it
-         * won't be sent again.
-         */
+        // Mark the reminder as sent only after successful delivery
+        // is reported by the email-sending function.
         await prisma.note.update({
           where: {
             id: note.id,
@@ -152,29 +129,22 @@ export async function processReminders(): Promise<ProcessRemindersResult> {
 
         result.errors.push(
           `Error processing note "${note.id}": ${
-            error instanceof Error
-              ? error.message
-              : "Unknown error."
-          }`
+            error instanceof Error ? error.message : "Unknown error."
+          }`,
         );
       }
     }
 
     return result;
   } catch (error) {
-    console.error(
-      "Failed to process reminders:",
-      error
-    );
+    console.error("Failed to process reminders:", error);
 
     return {
       ...result,
       success: false,
       errors: [
         ...result.errors,
-        error instanceof Error
-          ? error.message
-          : "Failed to process reminders.",
+        error instanceof Error ? error.message : "Failed to process reminders.",
       ],
     };
   }

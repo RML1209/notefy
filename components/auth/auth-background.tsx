@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import { Inconsolata } from "next/font/google";
-
+import Link from "next/link";
 
 const inconsolata = Inconsolata({
   subsets: ["latin"],
@@ -67,6 +67,11 @@ export function AuthBackground() {
 
       {/* Logo */}
       <div className="flex justify-left">
+        
+        <Link
+         href="/"
+          aria-label="Go to Notefy homepage"
+          className="inline-flex">
         <Image
           src="https://files.catbox.moe/mapft8.png"
           alt="Notefy logo"
@@ -76,6 +81,9 @@ export function AuthBackground() {
           unoptimized
           className="object-contain rou bg-blue-300"
         />
+        
+        </Link>
+
       </div>
 
       {/* Center Content */}
