@@ -63,10 +63,7 @@ export function VerifyTwoFactorForm() {
   }
 
   return (
-    <form
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="space-y-5"
-    >
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
       {/* Authentication Code */}
       <Controller
         name="token"
@@ -90,17 +87,10 @@ export function VerifyTwoFactorForm() {
       <FormSuccess message={success} />
 
       {/* Verify Button */}
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={isPending}
-      >
+      <Button type="submit" className="w-full" disabled={isPending}>
         {isPending ? (
           <>
-            <Spinner
-              size="sm"
-              className="mr-2"
-            />
+            <Spinner size="sm" className="mr-2" />
             Verifying...
           </>
         ) : (

@@ -2,9 +2,17 @@ import Link from "next/link";
 
 import { ArrowRight } from "lucide-react";
 
+import { Jersey_25 } from "next/font/google";
+
 import { Button } from "@/components/ui/button";
 
+  const bowlby = Jersey_25({
+    weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+});
 export function CTA() {
+
   return (
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -32,7 +40,7 @@ export function CTA() {
               Get Started Today
             </span>
 
-            <h2 className="mt-6 text-4xl font-bold text-white md:text-5xl">
+            <h2 className={`mt-6 text-4xl font-bold bg-green-400 text-blue md:text-5xl ${bowlby.className}`}>
               Start organizing your life with Notefy.
             </h2>
 

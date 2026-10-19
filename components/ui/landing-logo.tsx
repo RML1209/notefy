@@ -21,7 +21,7 @@ export function Logo({
 }: LogoProps) {
   return (
       <Image
-        src="/notefy-logo.png"
+        src="https://files.catbox.moe/txzbgn.png"
         alt="Notefy Logo"
         width={size}
         height={size}
