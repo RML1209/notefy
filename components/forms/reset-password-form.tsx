@@ -14,7 +14,7 @@ import {
 import { resetPassword } from "@/actions/auth/reset-password";
 
 import { PasswordInput } from "@/components/ui/password-input";
-import { OTPInput } from "@/components/ui/input-otp";
+import { OTPInput } from "@/components/ui/otp-input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { FormError } from "@/components/ui/form-error";

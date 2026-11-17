@@ -17,7 +17,7 @@ import { verifyTwoFactor } from "@/actions/auth/verify-2fa";
 
 import { Button } from "@/components/ui/button";
 
-import { OtpInput } from "@/components/ui/input-otp";
+import { OTPInput } from "@/components/ui/otp-input";
 
 import { Spinner } from "@/components/ui/spinner";
 
@@ -69,7 +69,7 @@ export function VerifyTwoFactorForm() {
         name="token"
         control={form.control}
         render={({ field, fieldState }) => (
-          <OtpInput
+          <OTPInput
             label="Authentication Code"
             length={6}
             value={field.value}

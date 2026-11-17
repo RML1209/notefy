@@ -13,7 +13,7 @@ interface OtpInputProps {
   error?: string;
 }
 
-export function OtpInput({
+export function OTPInput({
   label,
   value,
   onChange,
