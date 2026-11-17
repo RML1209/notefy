@@ -17,7 +17,7 @@ import { verifyTwoFactor } from "@/actions/auth/verify-2fa";
 
 import { Button } from "@/components/ui/button";
 
-import { OtpInput } from "@/components/ui/otp-input";
+import { OtpInput } from "@/components/ui/input-otp";
 
 import { Spinner } from "@/components/ui/spinner";
 
