@@ -13,7 +13,7 @@ import {
 import { verifyEmail } from "@/actions/auth/verify-email";
 
 import { Button } from "@/components/ui/button";
-import { OTPInput } from "@/components/ui/otp-input";
+import { CodeInput } from "@/components/ui/code-input";
 import { Spinner } from "@/components/ui/spinner";
 import { FormError } from "@/components/ui/form-error";
 import { FormSuccess } from "@/components/ui/form-success";
@@ -68,7 +68,7 @@ export function VerifyEmailForm() {
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
       <input type="hidden" {...form.register("email")} />
 
-      <OTPInput
+      <CodeInput
         label="Verification Code"
         value={token ?? ""}
         onChange={(value) =>

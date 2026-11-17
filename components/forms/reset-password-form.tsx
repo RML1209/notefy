@@ -14,7 +14,7 @@ import {
 import { resetPassword } from "@/actions/auth/reset-password";
 
 import { PasswordInput } from "@/components/ui/password-input";
-import { OTPInput } from "@/components/ui/otp-input";
+import { CodeInput } from "@/components/ui/code-input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { FormError } from "@/components/ui/form-error";
@@ -78,7 +78,7 @@ export function ResetPasswordForm() {
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
       <input type="hidden" {...form.register("email")} />
 
-      <OTPInput
+      <CodeInput
         label="Reset Code"
         value={token ?? ""}
         onChange={(value) =>
