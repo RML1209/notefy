@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-interface OTPInputProps {
+interface OtpInputProps {
   label?: string;
   value?: string;
   onChange: (value: string) => void;
@@ -13,14 +13,14 @@ interface OTPInputProps {
   error?: string;
 }
 
-export function OTPInput({
+export function OtpInput({
   label,
   value,
   onChange,
   length = 6,
   disabled = false,
   error,
-}: OTPInputProps) {
+}: OtpInputProps) {
   const inputsRef = React.useRef<
     Array<HTMLInputElement | null>
   >([]);
