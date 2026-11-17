@@ -11,7 +11,19 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "files.catbox.moe",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.corenexis.com",
+        port: "",
+        pathname: "/f/**",
+      },
     ],
+  },
+
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3000", "2c6fgwrx-3000.uks1.devtunnels.ms"],
+    },
   },
 };
 

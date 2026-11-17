@@ -53,21 +53,19 @@ export function Hero() {
           {/* CTA Buttons */}
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
             <Button
-              asChild
               size="lg"
-              className="h-12 rounded-xl px-6 shadow-lg shadow-[#6A89A7]/20"
+              className="h-12 rounded-xl px-8 shadow-lg shadow-[#6A89A7]/20"
             >
               <Link href="/register">
                 Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-8 h-4 w-4" />
               </Link>
             </Button>
 
             <Button
-              asChild
               size="lg"
               variant="outline"
-              className="h-12 rounded-xl border-slate-300 bg-white/70 px-6 dark:border-slate-700 dark:bg-slate-900/50"
+              className="h-12 rounded-xl border-slate-300 bg-white/70 px-8 dark:border-slate-700 dark:bg-slate-900/50"
             >
               <Link href="/login">Sign In</Link>
             </Button>
@@ -115,7 +113,7 @@ export function Hero() {
 
             {/* Light Theme Image */}
             <Image
-              src="https://files.catbox.moe/bm56s3.png"
+              src="https://cdn.corenexis.com/f/L3NtZM6U.png"
               alt="Preview of the Notefy application in light mode"
               width={1440}
               height={1000}
@@ -126,7 +124,7 @@ export function Hero() {
 
             {/* Dark Theme Image */}
             <Image
-              src="https://files.catbox.moe/s0jbza.png"
+              src="https://cdn.corenexis.com/f/NfvRQqWR.png"
               alt="Preview of the Notefy application in dark mode"
               width={1440}
               height={1000}

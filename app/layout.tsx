@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: "Notefy",
   description: "A simple note-taking app",
   icons: {
-    icon: "https://files.catbox.moe/mapft8.png",
+    icon: "https://cdn.corenexis.com/f/yafzg5Jj.png",
   },
 };
 

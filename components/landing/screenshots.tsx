@@ -1,16 +1,9 @@
-import {
-  CalendarDays,
-  Clock3,
-  NotebookPen,
-  Pin,
-} from "lucide-react";
+
+import Image from "next/image";
 
 export function Screenshots() {
   return (
-    <section
-      id="preview"
-      className="bg-slate-50 py-24 dark:bg-[#0F171B]"
-    >
+    <section id="preview" className="bg-slate-50 py-24 dark:bg-[#0F171B]">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-3xl text-center">
@@ -23,9 +16,8 @@ export function Screenshots() {
           </h2>
 
           <p className="mt-5 text-lg text-slate-600 dark:text-slate-300">
-            A clean, distraction-free workspace that helps
-            you manage notes, reminders, and your schedule
-            from one beautiful dashboard.
+            A clean, distraction-free workspace that helps you manage notes,
+            reminders, and your schedule from one beautiful dashboard.
           </p>
         </div>
 
@@ -33,52 +25,40 @@ export function Screenshots() {
         <div className="mt-16 grid gap-8 lg:grid-cols-3">
           {/* Dashboard */}
           <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-[#111A1F]">
-            <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-red-400" />
-                <span className="h-3 w-3 rounded-full bg-yellow-400" />
-                <span className="h-3 w-3 rounded-full bg-green-400" />
-              </div>
-            </div>
-
-            <div className="space-y-5 p-6">
-              <div className="h-8 w-1/2 rounded-lg bg-[#6A89A7]/20" />
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-xl bg-[#6A89A7]/10 p-4">
-                  <NotebookPen className="mb-3 h-6 w-6 text-[#6A89A7]" />
-
-                  <div className="h-3 w-14 rounded bg-slate-200 dark:bg-slate-700" />
-
-                  <div className="mt-3 h-8 w-10 rounded bg-slate-300 dark:bg-slate-600" />
-                </div>
-
-                <div className="rounded-xl bg-[#6A89A7]/10 p-4">
-                  <CalendarDays className="mb-3 h-6 w-6 text-[#6A89A7]" />
-
-                  <div className="h-3 w-16 rounded bg-slate-200 dark:bg-slate-700" />
-
-                  <div className="mt-3 h-8 w-10 rounded bg-slate-300 dark:bg-slate-600" />
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="h-4 rounded bg-slate-200 dark:bg-slate-700" />
-                <div className="h-4 w-5/6 rounded bg-slate-200 dark:bg-slate-700" />
-                <div className="h-4 w-4/6 rounded bg-slate-200 dark:bg-slate-700" />
-              </div>
-            </div>
+            {/* Actual Notefy screenshot */}
+            <Image
+              src="https://files.catbox.moe/w6ce3t.png"
+              alt="Notefy dashboard preview showing the real application interface, notes, and reminders"
+              width={100}
+              height={100}
+              priority
+              unoptimized
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 95vw, 1152px"
+              className="block h-auto w-full object-contain"
+            />
           </div>
 
           {/* Notes */}
           <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-[#111A1F]">
-            <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+            {/* Actual Notefy screenshot */}
+            <Image
+              src="https://files.catbox.moe/gax2x3.png"
+              alt="Notefy dashboard preview showing the real application interface, notes, and reminders"
+              width={100}
+              height={100}
+              priority
+              unoptimized
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 95vw, 1152px"
+              className="block h-auto w-full object-contain"
+            />
+
+            {/* <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
               <div className="font-semibold text-slate-900 dark:text-white">
                 Notes
               </div>
-            </div>
+            </div> */}
 
-            <div className="space-y-4 p-6">
+            {/* <div className="space-y-4 p-6">
               {[1, 2, 3].map((item) => (
                 <div
                   key={item}
@@ -96,61 +76,22 @@ export function Screenshots() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Calendar */}
           <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-[#111A1F]">
-            <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-              <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
-                <CalendarDays className="h-5 w-5 text-[#6A89A7]" />
-
-                Calendar
-              </div>
-            </div>
-
-            <div className="p-6">
-              <div className="grid grid-cols-7 gap-2">
-                {Array.from({ length: 35 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className={`flex aspect-square items-center justify-center rounded-lg text-xs ${
-                      index === 16
-                        ? "bg-[#6A89A7] text-white"
-                        : "bg-slate-100 dark:bg-slate-800"
-                    }`}
-                  >
-                    {index + 1 <= 31 ? index + 1 : ""}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 rounded-2xl bg-[#6A89A7]/10 p-4">
-                <div className="flex items-center gap-3">
-                  <Clock3 className="h-5 w-5 text-[#6A89A7]" />
-
-                  <div>
-                    <p className="font-medium text-slate-900 dark:text-white">
-                      Project Deadline
-                    </p>
-
-                    <p className="text-sm text-slate-500">
-                      Tomorrow • 09:00 AM
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Image
+              src="https://files.catbox.moe/fb2wdz.png"
+              alt="Notefy dashboard preview showing the real application interface, notes, and reminders"
+              width={100}
+              height={100}
+              priority
+              unoptimized
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 95vw, 1152px"
+              className="block h-auto w-full object-contain"
+            />
           </div>
-        </div>
-
-        {/* Bottom Note */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Preview illustrations will automatically be
-            replaced with real Notefy screenshots as the
-            application is developed.
-          </p>
         </div>
       </div>
     </section>

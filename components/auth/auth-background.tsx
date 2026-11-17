@@ -73,13 +73,13 @@ export function AuthBackground() {
           aria-label="Go to Notefy homepage"
           className="inline-flex">
         <Image
-          src="https://files.catbox.moe/mapft8.png"
+          src="https://cdn.corenexis.com/f/3cOEymil.png"
           alt="Notefy logo"
-          width={36}
-          height={36}
+          width={46}
+          height={46}
           priority
           unoptimized
-          className="object-contain rou bg-blue-300"
+          className="object-contain"
         />
         
         </Link>

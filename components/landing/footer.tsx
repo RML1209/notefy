@@ -16,10 +16,10 @@ const productLinks = [
     label: "Features",
     href: "#features",
   },
-  {
-    label: "Preview",
-    href: "#preview",
-  },
+  // {
+  //   label: "Preview",
+  //   href: "#preview",
+  // },
   {
     label: "FAQ",
     href: "#faq",
@@ -209,8 +209,7 @@ export function Footer() {
           </p>
 
           <p>
-            Designed and developed with ❤️ for productive
-            people.
+           Managed by Caston 
           </p>
         </div>
       </div>

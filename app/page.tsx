@@ -4,7 +4,7 @@ import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
 import { Hero } from "@/components/landing/hero";
 import { Navbar } from "@/components/landing/navbar";
-import { Screenshots } from "@/components/landing/screenshots";
+// import { Screenshots } from "@/components/landing/screenshots";
 import { WhyNotefy } from "@/components/landing/why-notefy";
 
 export default function HomePage() {
@@ -16,7 +16,7 @@ export default function HomePage() {
 
       <Features />
 
-      <Screenshots />
+      {/* <Screenshots /> */}
 
       <WhyNotefy />
 

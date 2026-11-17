@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { AuthBackground } from "@/components/auth/auth-background";
-
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 interface AuthWrapperProps {
   children: React.ReactNode;
 }
@@ -39,6 +39,13 @@ export function AuthWrapper({
           lg:px-12
         "
       >
+        <div className="absolute right-4 top-4 lg:right-12 lg:top-8">
+
+          <ThemeToggle  />
+          
+        </div>
+        
+
         <div className="w-full max-w-md">
           {children}
         </div>
