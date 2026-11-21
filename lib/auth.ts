@@ -5,8 +5,6 @@ import bcrypt from "bcryptjs";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
-// import type { PrismaClient as AuthPrismaClient } from "@prisma/client";
-
 import { prisma } from "@/lib/prisma";
 import { verifyLoginTicket } from "@/lib/login-ticket";
 
