@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
-import type { PrismaClient as AuthPrismaClient } from "@prisma/client";
+// import type { PrismaClient as AuthPrismaClient } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { verifyLoginTicket } from "@/lib/login-ticket";
@@ -15,7 +15,7 @@ import { authConfig } from "./auth.config";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
 
-  adapter: PrismaAdapter(prisma as unknown as AuthPrismaClient),
+  adapter: PrismaAdapter(prisma as unknown as Parameters<typeof PrismaAdapter>[0]),
 
   session: {
     strategy: "jwt",
