@@ -34,8 +34,7 @@ export async function sendReminderEmail({
     const noteUrl = `${appUrl}/notes/${noteId}`;
 
     const from =
-      process.env.RESEND_FROM_EMAIL ??
-      "Notefy <onboarding@resend.dev>";
+      process.env.RESEND_FROM_EMAIL ?? "Notefy <noreply@notefy.nukia.online>";
 
     const { error } = await resend.emails.send({
       from,
